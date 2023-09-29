@@ -82,7 +82,13 @@ public class LogService {
             long viewCount = 200;
 
             if (dto.getPreView() > viewCount / 2 && count < MAX_POSTING) { // 조건 2 : 3시간 동안 전체 조회수의 50% 이상
-                // 메일 전송 로직 추가!
+                // 임시 값!
+                long id = 123;
+                String email = "1212guswjd@gmail.com";
+                String title = "-제--목-";
+
+                emailService.sendOnFireEmail(email, NOTIFICATION_SUBJECT, NOTIFICATION_MESSAGE, title, viewCount);
+                log.info("단기간 급상승 게시물 메일 전송 id :" + id);
                 count += 1;
             }
         }
