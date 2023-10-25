@@ -36,5 +36,5 @@ out/
 ### VS Code ###
 .vscode/
 
-### local setting ###
-application-local.yml
+### setting ###
+.yml
