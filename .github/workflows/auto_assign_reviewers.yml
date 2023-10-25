@@ -1,0 +1,20 @@
+name: 리뷰어 자동 지정
+
+on:
+  pull_request:
+    types: [opened, ready_for_review]
+
+jobs:
+  assign:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run action with token
+        uses: hkusu/review-assign-action@v1
+        with:
+          token: ${{ secrets.github_token }}
+          assignees: ${{ github.actor }}
+          reviewers: 12hyeon, madst0614, HyunsooZo, junkyu92
+          max-num-of-reviewers: 3
