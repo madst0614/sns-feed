@@ -15,7 +15,8 @@ import static wanted.n.exception.ErrorCode.UNDEFINED_EXCEPTION;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    //Validation 예외처리 @ExceptionHandler(MethodArgumentNotValidException.class)
+    //Validation 예외처리
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<List<String>> handleValidException(
             MethodArgumentNotValidException exception) {
 
@@ -43,7 +44,7 @@ public class GlobalExceptionHandler {
 
     //별도로 정의되지 않았으나 발생한 예외 처리
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> Exception(Exception exception) {
+    public ResponseEntity<ErrorResponse> undefinedException(Exception exception) {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .message(exception.getMessage())
                 .errorCode(UNDEFINED_EXCEPTION)
