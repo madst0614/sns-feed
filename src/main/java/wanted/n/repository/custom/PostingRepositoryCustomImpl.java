@@ -54,14 +54,14 @@ public class PostingRepositoryCustomImpl implements PostingRepositoryCustom {
             };
         }
 
-        // (쿼리 2차 가공) order 조건과 Pagination
+        // Pageable에서 order 조건 추출
         List<OrderSpecifier> order = new ArrayList<>();
         pageable.getSort().stream().forEach(o -> {
             order.add( new OrderSpecifier((o.getDirection().isAscending() ? Order.ASC : Order.DESC),
                     new PathBuilder(Posting.class,"posting").get(o.getProperty())));
         });
 
-
+        // (쿼리 2차 가공) order 조건과 Pagination
         query = query
                 .orderBy(order.stream().toArray((OrderSpecifier[]::new)))
                 .offset(pageable.getOffset())
