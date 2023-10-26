@@ -36,7 +36,6 @@ public class LogFilter implements Filter {
             // tag가 존재하는 값인 경우
             redisService.saveObjectAsJson(new LogDTO(tag, System.currentTimeMillis()));
         }
-        System.out.println("LogFilter.doFilter");
         filterChain.doFilter(request, servletResponse);
     }
 }
