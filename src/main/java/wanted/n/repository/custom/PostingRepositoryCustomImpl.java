@@ -30,7 +30,7 @@ public class PostingRepositoryCustomImpl implements PostingRepositoryCustom {
     @Override
     public Page<Posting> searchByCondition(PostingSearchConditionDto dto, Pageable pageable){
 
-        // In Query, Base condition inner join and applied tag, posting type condition
+        // (베이스 쿼리) hashtag, type 조건
         JPQLQuery<Posting> query = queryFactory
                 .select(Projections.fields(Posting.class, posting.id, posting.title,
                         new CaseBuilder()
@@ -43,7 +43,7 @@ public class PostingRepositoryCustomImpl implements PostingRepositoryCustom {
                 .leftJoin(postingHashTag.posting, posting)
                 .where(postingHashTag.hashTag.id.eq(dto.getHashTagId()),eqType(dto.getType())).distinct();
 
-        //In Query, apply type condition
+        // (쿼리 1차 가공) searchType != null 일때
         if(dto.getSearchType()!=null){
             switch(dto.getSearchType()){
                 case T : query = query.where(posting.title.contains(dto.getSearchKeyword()));
@@ -54,7 +54,7 @@ public class PostingRepositoryCustomImpl implements PostingRepositoryCustom {
             };
         }
 
-        // In Query, Order By and Pagination
+        // (쿼리 2차 가공) order 조건과 Pagination
         List<OrderSpecifier> order = new ArrayList<>();
         pageable.getSort().stream().forEach(o -> {
             order.add( new OrderSpecifier((o.getDirection().isAscending() ? Order.ASC : Order.DESC),
@@ -71,6 +71,7 @@ public class PostingRepositoryCustomImpl implements PostingRepositoryCustom {
         return PageableExecutionUtils.getPage(query.fetch(), pageable, query::fetchCount);
     }
 
+    // type이 null 일때 where절 처리
     private BooleanExpression eqType(PostingType type) {
         return type != null ? posting.type.eq(type) : null;
     }
