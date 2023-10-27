@@ -6,8 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import wanted.n.config.JwtTokenProvider;
 import wanted.n.domain.User;
-import wanted.n.dto.UserVerificationRequest;
+import wanted.n.dto.UserVerificationRequestDTO;
 import wanted.n.enums.UserStatus;
 import wanted.n.exception.CustomException;
 import wanted.n.repository.UserRepository;
@@ -28,12 +29,17 @@ public class UserVerificationTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
+    @Mock
+    private JwtTokenProvider jwtTokenProvider;
+
     private UserService userService;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        userService = new UserService(userRepository, passwordEncoder);
+        userService = new UserService(
+                userRepository, passwordEncoder, jwtTokenProvider
+        );
     }
 
     @Test
@@ -44,8 +50,8 @@ public class UserVerificationTest {
         String password = "password123";
         String otp = "123456";
 
-        UserVerificationRequest verificationRequest =
-                new UserVerificationRequest(email, password, otp);
+        UserVerificationRequestDTO verificationRequest =
+                new UserVerificationRequestDTO(email, password, otp);
 
         User user = User.builder()
                 .email(email)
@@ -72,8 +78,8 @@ public class UserVerificationTest {
         String password = "password123";
         String otp = "123456";
 
-        UserVerificationRequest verificationRequest =
-                new UserVerificationRequest(email, password, otp);
+        UserVerificationRequestDTO verificationRequest =
+                new UserVerificationRequestDTO(email, password, otp);
 
         //when&then
         assertThatThrownBy(() -> userService.verifyUser(verificationRequest))
@@ -89,8 +95,8 @@ public class UserVerificationTest {
         String password = "password123";
         String otp = "123456";
 
-        UserVerificationRequest verificationRequest =
-                new UserVerificationRequest(email, password, otp);
+        UserVerificationRequestDTO verificationRequest =
+                new UserVerificationRequestDTO(email, password, otp);
 
         User user = User.builder()
                 .email(email)
@@ -115,8 +121,8 @@ public class UserVerificationTest {
         String wrongPassword = "wrongPassword";
         String otp = "123456";
 
-        UserVerificationRequest verificationRequest =
-                new UserVerificationRequest(email, password, otp);
+        UserVerificationRequestDTO verificationRequest =
+                new UserVerificationRequestDTO(email, password, otp);
 
         User user = User.builder()
                 .email(email)
