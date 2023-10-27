@@ -1,6 +1,8 @@
 package wanted.n.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -9,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@EnableScheduling
 @Service
 @RequiredArgsConstructor
 public class LogService {
@@ -18,7 +21,8 @@ public class LogService {
     private final static String KEY_HOT_HASHTAG = "tags"; // 핫 해시태그 리스트를 저장하는 키
     private final static Integer TIMES = 3 * 60 * 60 * 1000;
 
-    // 최근 3시간 많이 이용된 tag redis에 저장
+    // 최근 3시간 많이 사용된 태그 순으로 리스트 저장
+    @Scheduled(cron = "0 0 */1 * * *") // 매 1시간마다 실행
     public void getCountByTagForLast3Hours() {
         long threeHoursAgoTime = System.currentTimeMillis() - TIMES;
         Set<String> tags = redisService.findDataWithKey("*" + KEY_TAG + "*");
@@ -46,4 +50,5 @@ public class LogService {
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
     }
+
 }
