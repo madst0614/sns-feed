@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.envers.AuditOverride;
+import wanted.n.dto.UserSignUpRequest;
 import wanted.n.enums.UserRole;
 import wanted.n.enums.UserStatus;
 
@@ -16,7 +17,7 @@ import javax.persistence.*;
 @Builder
 @AuditOverride(forClass = BaseEntity.class)
 @Entity
-public class User extends BaseEntity{
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,4 +40,13 @@ public class User extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
 
+    public static User from(UserSignUpRequest userSignUpRequest) {
+        return User.builder()
+                .account(userSignUpRequest.getAccount())
+                .email(userSignUpRequest.getEmail())
+                .password(userSignUpRequest.getPassword())
+                .userRole(UserRole.ROLE_USER)
+                .userStatus(UserStatus.UNVERIFIED)
+                .build();
+    }
 }
