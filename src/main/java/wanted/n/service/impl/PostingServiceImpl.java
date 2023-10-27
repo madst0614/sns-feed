@@ -20,6 +20,7 @@ public class PostingServiceImpl implements PostingService {
     PostingRepository postingRepository;
     @Autowired
     HashTagRepository hashTagRepository;
+
     @Override
     public Page<Posting> getPostingList(PostingSearchRequestDto dto, Pageable pageable) {
         // !WARN! hashTagId look-up 필요 !WARN!
@@ -41,6 +42,7 @@ public class PostingServiceImpl implements PostingService {
 
         return postingRepository.findPostingPageByCondition(postingSearchConditionDto, pageable);
     }
+
     @Override
     public Posting getPostingDetail(Long postingId) {
         Posting posting = postingRepository.findById(postingId).orElseThrow(()->new CustomException(ErrorCode.POSTING_NOT_FOUND));
@@ -55,6 +57,7 @@ public class PostingServiceImpl implements PostingService {
                 .shareCount(posting.getShareCount())
                 .build());
     }
+
     @Override
     public Boolean likePosting(Long postingId) {
         // !WARN! 좋아요 시도 구현 필요
@@ -78,6 +81,7 @@ public class PostingServiceImpl implements PostingService {
 
         return null;
     }
+
     @Override
     public Boolean SharePosting(Long postingId) {
         Posting posting = postingRepository.findById(postingId)
@@ -94,6 +98,7 @@ public class PostingServiceImpl implements PostingService {
                 .build());
         return null;
     }
+
     static void PageValidCheck(Pageable pageable){
         if(pageable.getOffset() < 0)
             throw new CustomException(ErrorCode.INVALID_PAGINATION_OFFSET);

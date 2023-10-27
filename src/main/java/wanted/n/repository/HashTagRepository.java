@@ -7,5 +7,4 @@ import wanted.n.repository.custom.HashTagRepositoryCustom;
 
 @Repository
 public interface HashTagRepository extends JpaRepository<HashTag, Long>, HashTagRepositoryCustom {
-
 }
