@@ -9,6 +9,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wanted.n.dto.LogDTO;
 import wanted.n.exception.CustomException;
 
@@ -23,6 +24,9 @@ import static wanted.n.exception.ErrorCode.JSON_EXCEPTION;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+
+import static wanted.n.exception.ErrorCode.INVALID_OTP;
+import static wanted.n.exception.ErrorCode.OTP_EXPIRED;
 
 @Slf4j
 @Service
@@ -107,5 +111,29 @@ public class RedisService {
         ValueOperations<String, String> ops = redisTemplate.opsForValue();
         ops.set(key, value);
         redisTemplate.expire(key, expireTime, TimeUnit.MINUTES);
+    }
+
+    /**
+     * Redis에 저장된 OTP 값과 사용자가 입력한 OTP 값을 비교하는 메서드
+     * 일치할 경우에는 OTP 를 삭제
+     *
+     * @param email
+     * @param otp
+     */
+    @Transactional(readOnly = true)
+    public void otpVerification(String email, String otp) {
+        String key = KEY_OTP + email;
+
+        // Redis에 해당 이메일을 키로 한 OTP 정보가 존재하지 않으면 OTP가 만료되었음을 의미
+        if (Boolean.FALSE.equals(redisTemplate.hasKey(key))) {
+            throw new CustomException(OTP_EXPIRED);
+        }
+
+        String storedOtp = redisTemplate.opsForValue().get(key);
+
+        // 입력한 OTP가 저장된 OTP와 일치하지 않을 경우 예외 발생
+        if (!otp.equals(storedOtp)) {
+            throw new CustomException(INVALID_OTP);
+        }
     }
 }

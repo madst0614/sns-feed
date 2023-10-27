@@ -6,10 +6,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wanted.n.domain.User;
 import wanted.n.dto.UserSignUpRequest;
+import wanted.n.dto.UserVerificationRequest;
 import wanted.n.exception.CustomException;
 import wanted.n.repository.UserRepository;
 import wanted.n.utility.ValidationUtil;
 
+import static wanted.n.enums.UserStatus.VERIFIED;
 import static wanted.n.exception.ErrorCode.*;
 
 /**
@@ -67,5 +69,24 @@ public class UserService {
         if (ValidationUtil.containsTwoOrMoreCharacterTypes(password)) {
             throw new CustomException(INVALID_PASSWORD_AT_LEAST_2_TYPES);
         }
+    }
+
+    @Transactional
+    public void verifyUser(UserVerificationRequest verificationRequest) {
+
+        User user = userRepository.findByEmail(verificationRequest.getEmail())
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        if (user.getUserStatus().equals(VERIFIED)) {
+            throw new CustomException(ALREADY_VERIFIED_USER);
+        }
+
+        if (!passwordEncoder.matches(verificationRequest.getPassword(), user.getPassword())) {
+            throw new CustomException(PASSWORD_NOT_MATCH);
+        }
+
+        user.setUserStatus(VERIFIED);
+
+        userRepository.save(user);
     }
 }
