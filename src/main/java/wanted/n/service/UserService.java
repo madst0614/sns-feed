@@ -71,6 +71,13 @@ public class UserService {
         }
     }
 
+    /**
+     * 사용자를 확인하고, 이미 인증된 사용자인지 확인한 후,
+     * 입력된 비밀번호와 사용자의 저장된 비밀번호를 비교하여
+     * 사용자를 인증하고 상태를 'VERIFIED'로 설정
+     *
+     * @param verificationRequest 사용자 인증 요청 정보
+     */
     @Transactional
     public void verifyUser(UserVerificationRequest verificationRequest) {
 
@@ -90,6 +97,11 @@ public class UserService {
         userRepository.save(user);
     }
 
+    /**
+     * 사용자의 이메일을 확인하고, 이미 인증된 사용자인지 확인.
+     *
+     * @param email 사용자 이메일
+     */
     public void checkUser(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
