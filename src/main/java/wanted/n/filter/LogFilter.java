@@ -24,16 +24,18 @@ public class LogFilter implements Filter {
     private final ObjectMapper objectMapper;
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
-            throws IOException, ServletException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
-        String requestBody = new String(request.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
 
-        // LogPostingDTO 객체로 변환
-        for (String t : objectMapper.readValue(requestBody, LogPostingDTO.class).getTag()) {
-            redisService.saveObjectAsJson(new LogDTO(t, System.currentTimeMillis()));
+        if (request.getRequestURI().contains("/log")) {
+            String requestBody = new String(request.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+
+            // LogPostingDTO 객체로 변환
+            for (String t : objectMapper.readValue(requestBody, LogPostingDTO.class).getTag()) {
+                redisService.saveObjectAsJson(new LogDTO(t, System.currentTimeMillis()));
+            }
         }
 
-        filterChain.doFilter(request, servletResponse);
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 }
