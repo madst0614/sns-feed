@@ -6,7 +6,5 @@ import wanted.n.domain.Posting;
 import wanted.n.dto.PostingSearchConditionDto;
 
 public interface PostingRepositoryCustom {
-    Page<Posting> searchByCondition(PostingSearchConditionDto condition, Pageable pageable);
-
-
+    Page<Posting> findPostingPageByCondition(PostingSearchConditionDto condition, Pageable pageable);
 }
