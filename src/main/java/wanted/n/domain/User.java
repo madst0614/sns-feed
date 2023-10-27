@@ -49,4 +49,8 @@ public class User extends BaseEntity {
                 .userStatus(UserStatus.UNVERIFIED)
                 .build();
     }
+
+    public void setUserStatus(UserStatus userStatus) {
+        this.userStatus = userStatus;
+    }
 }
