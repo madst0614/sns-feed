@@ -13,7 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import wanted.n.dto.TokenIssuanceDto;
+import wanted.n.dto.TokenIssuanceDTO;
 import wanted.n.enums.UserRole;
 import wanted.n.service.UserDetailsServiceImpl;
 
@@ -41,10 +41,10 @@ public class JwtTokenProvider {
     }
 
     /* Access Token 생성 메서드 - 클레임에 이메일과 UserRole 삽입 */
-    public String generateAccessToken(TokenIssuanceDto tokenTokenIssuanceDto) {
-        Claims claims = Jwts.claims().setSubject(tokenTokenIssuanceDto.getId().toString());
-        claims.put("email", tokenTokenIssuanceDto.getEmail());
-        claims.put("userRole", tokenTokenIssuanceDto.getUserRole().getRoleName());
+    public String generateAccessToken(TokenIssuanceDTO tokenTokenIssuanceDTO) {
+        Claims claims = Jwts.claims().setSubject(tokenTokenIssuanceDTO.getId().toString());
+        claims.put("email", tokenTokenIssuanceDTO.getEmail());
+        claims.put("userRole", tokenTokenIssuanceDTO.getUserRole().getRoleName());
 
         return Jwts.builder()
                 .setClaims(claims)

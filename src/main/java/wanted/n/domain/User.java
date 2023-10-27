@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.envers.AuditOverride;
-import wanted.n.dto.UserSignUpRequest;
+import wanted.n.dto.UserSignUpRequestDTO;
 import wanted.n.enums.UserRole;
 import wanted.n.enums.UserStatus;
 
@@ -40,11 +40,11 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
 
-    public static User from(UserSignUpRequest userSignUpRequest) {
+    public static User from(UserSignUpRequestDTO userSignUpRequestDTO) {
         return User.builder()
-                .account(userSignUpRequest.getAccount())
-                .email(userSignUpRequest.getEmail())
-                .password(userSignUpRequest.getPassword())
+                .account(userSignUpRequestDTO.getAccount())
+                .email(userSignUpRequestDTO.getEmail())
+                .password(userSignUpRequestDTO.getPassword())
                 .userRole(UserRole.ROLE_USER)
                 .userStatus(UserStatus.UNVERIFIED)
                 .build();

@@ -15,7 +15,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @Builder
 @ApiModel(value = "회원가입 Request", description = "사용자가 회원가입을 위해 입력하는 정보")
-public class UserSignUpRequest {
+public class UserSignUpRequestDTO {
 
     @NotBlank(message = "계정을 입력해 주세요.")
     private String account;
