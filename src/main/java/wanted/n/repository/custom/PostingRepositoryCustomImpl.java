@@ -28,7 +28,7 @@ public class PostingRepositoryCustomImpl implements PostingRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<Posting> searchByCondition(PostingSearchConditionDto dto, Pageable pageable){
+    public Page<Posting> findPostingPageByCondition(PostingSearchConditionDto dto, Pageable pageable){
 
         // (베이스 쿼리) hashtag, type 조건
         JPQLQuery<Posting> query = queryFactory

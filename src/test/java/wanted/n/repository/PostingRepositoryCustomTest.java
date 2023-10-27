@@ -52,7 +52,7 @@ public class PostingRepositoryCustomTest {
         final Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "createdAt");
 
         //When
-        final Page<Posting> result = postingRepository.searchByCondition(dto,pageable);
+        final Page<Posting> result = postingRepository.findPostingPageByCondition(dto,pageable);
         final List<Posting> resultList = result.getContent();
 
         //Then
@@ -74,7 +74,7 @@ public class PostingRepositoryCustomTest {
         final Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "updatedAt");
 
         //When
-        final Page<Posting> result = postingRepository.searchByCondition(dto,pageable);
+        final Page<Posting> result = postingRepository.findPostingPageByCondition(dto,pageable);
         final List<Posting> resultList = result.getContent();
 
         //Then
@@ -95,7 +95,7 @@ public class PostingRepositoryCustomTest {
         final Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "likeCount");
 
         //When
-        final Page<Posting> result = postingRepository.searchByCondition(dto,pageable);
+        final Page<Posting> result = postingRepository.findPostingPageByCondition(dto,pageable);
         final List<Posting> resultList = result.getContent();
 
         //Then
@@ -118,7 +118,7 @@ public class PostingRepositoryCustomTest {
         final Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "shareCount");
 
         //When
-        final Page<Posting> result = postingRepository.searchByCondition(dto,pageable);
+        final Page<Posting> result = postingRepository.findPostingPageByCondition(dto,pageable);
         final List<Posting> resultList = result.getContent();
 
         //Then
@@ -141,7 +141,7 @@ public class PostingRepositoryCustomTest {
         final Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "viewCount");
 
         //When
-        final Page<Posting> result = postingRepository.searchByCondition(dto,pageable);
+        final Page<Posting> result = postingRepository.findPostingPageByCondition(dto,pageable);
         final List<Posting> resultList = result.getContent();
 
         //Then
@@ -164,7 +164,7 @@ public class PostingRepositoryCustomTest {
         final Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "id");
 
         //When
-        final Page<Posting> result = postingRepository.searchByCondition(dto,pageable);
+        final Page<Posting> result = postingRepository.findPostingPageByCondition(dto,pageable);
         final List<Posting> resultList = result.getContent();
 
         //Then
@@ -187,7 +187,7 @@ public class PostingRepositoryCustomTest {
         final Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "id");
 
         //When
-        final Page<Posting> result = postingRepository.searchByCondition(dto,pageable);
+        final Page<Posting> result = postingRepository.findPostingPageByCondition(dto,pageable);
         final List<Posting> resultList = result.getContent();
 
         //Then
@@ -210,7 +210,7 @@ public class PostingRepositoryCustomTest {
         final Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "id");
 
         //When
-        final Page<Posting> result = postingRepository.searchByCondition(dto,pageable);
+        final Page<Posting> result = postingRepository.findPostingPageByCondition(dto,pageable);
         final List<Posting> resultList = result.getContent();
 
         //Then
@@ -233,7 +233,7 @@ public class PostingRepositoryCustomTest {
         final Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "id");
 
         //When
-        final Page<Posting> result = postingRepository.searchByCondition(dto,pageable);
+        final Page<Posting> result = postingRepository.findPostingPageByCondition(dto,pageable);
         final List<Posting> resultList = result.getContent();
 
         //Then
@@ -256,7 +256,7 @@ public class PostingRepositoryCustomTest {
         final Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "id");
 
         //When
-        final Page<Posting> result = postingRepository.searchByCondition(dto,pageable);
+        final Page<Posting> result = postingRepository.findPostingPageByCondition(dto,pageable);
         final List<Posting> resultList = result.getContent();
 
         //Then
@@ -279,7 +279,7 @@ public class PostingRepositoryCustomTest {
         final Pageable pageable = PageRequest.of(0, 5, Sort.Direction.ASC, "id");
 
         //When
-        final Page<Posting> result = postingRepository.searchByCondition(dto,pageable);
+        final Page<Posting> result = postingRepository.findPostingPageByCondition(dto,pageable);
         final List<Posting> resultList = result.getContent();
 
         //Then
@@ -303,7 +303,7 @@ public class PostingRepositoryCustomTest {
         final Pageable pageable = PageRequest.of(1, 5, Sort.Direction.ASC, "id");
 
         //When
-        final Page<Posting> result = postingRepository.searchByCondition(dto,pageable);
+        final Page<Posting> result = postingRepository.findPostingPageByCondition(dto,pageable);
         final List<Posting> resultList = result.getContent();
 
         //Then
@@ -327,7 +327,7 @@ public class PostingRepositoryCustomTest {
         final Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "id");
 
         //When
-        final Page<Posting> result = postingRepository.searchByCondition(dto,pageable);
+        final Page<Posting> result = postingRepository.findPostingPageByCondition(dto,pageable);
         final List<Posting> resultList = result.getContent();
 
         //Then
