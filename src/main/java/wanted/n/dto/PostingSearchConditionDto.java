@@ -10,7 +10,6 @@ import wanted.n.enums.SearchType;
 @Builder
 public class PostingSearchConditionDto {
     // 1건의 태그
-    private String hashTagName;
     private Long hashTagId;
 
     private PostingType type;
@@ -18,7 +17,4 @@ public class PostingSearchConditionDto {
     // Search
     private SearchType searchType;
     private String searchKeyword;
-
-    // default created_At
-    private String orderBy;
 }
