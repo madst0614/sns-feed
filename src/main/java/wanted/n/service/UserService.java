@@ -89,4 +89,14 @@ public class UserService {
 
         userRepository.save(user);
     }
+
+    public void checkUser(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        if(user.getUserStatus().equals(VERIFIED)){
+            throw new CustomException(ALREADY_VERIFIED_USER);
+        }
+
+    }
 }
