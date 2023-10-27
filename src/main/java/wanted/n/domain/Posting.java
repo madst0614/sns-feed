@@ -10,8 +10,12 @@ import java.util.List;
 
 
 @Entity
+@Table(name="posting")
 @Getter
-@ToString
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Posting extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

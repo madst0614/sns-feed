@@ -38,7 +38,7 @@ public class PostingRepositoryCustomImpl implements PostingRepositoryCustom {
                                 .then(posting.content.substring(0,20))
                                 .otherwise(posting.content)
                                 .as("content"),
-                        posting.type, posting.likeCount, posting.shareCount, posting.viewCount))
+                        posting.type, posting.likeCount, posting.shareCount, posting.viewCount, posting.createdAt, posting.updatedAt))
                 .from(postingHashTag)
                 .leftJoin(postingHashTag.posting, posting)
                 .where(postingHashTag.hashTag.id.eq(dto.getHashTagId()),eqType(dto.getType())).distinct();
@@ -63,9 +63,9 @@ public class PostingRepositoryCustomImpl implements PostingRepositoryCustom {
 
         // (쿼리 2차 가공) order 조건과 Pagination
         query = query
-                .orderBy(order.stream().toArray((OrderSpecifier[]::new)))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
+                .orderBy(order.stream().toArray((OrderSpecifier[]::new)))
                 ;
 
         return PageableExecutionUtils.getPage(query.fetch(), pageable, query::fetchCount);
