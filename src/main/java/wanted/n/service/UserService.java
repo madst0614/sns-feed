@@ -192,4 +192,14 @@ public class UserService {
             throw new CustomException(PASSWORD_NOT_MATCH);
         }
     }
+
+    public void checkUser(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        if(user.getUserStatus().equals(VERIFIED)){
+            throw new CustomException(ALREADY_VERIFIED_USER);
+        }
+
+    }
 }
