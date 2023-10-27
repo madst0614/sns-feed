@@ -12,7 +12,6 @@ import java.util.List;
 @Entity
 @Table(name="posting")
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,6 +22,7 @@ public class Posting extends BaseEntity{
     private String title;
     private String content;
 
+    @NotNull
     @Column
     @NotNull
     @Enumerated(EnumType.STRING)
