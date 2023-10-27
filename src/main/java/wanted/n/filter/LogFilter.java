@@ -32,7 +32,7 @@ public class LogFilter implements Filter {
 
             // LogPostingDTO 객체로 변환
             for (String t : objectMapper.readValue(requestBody, LogPostingDTO.class).getTag()) {
-                redisService.saveObjectAsJson(new LogDTO(t, System.currentTimeMillis()));
+                redisService.saveLogAsJson(new LogDTO(t, System.currentTimeMillis()));
             }
         }
 
