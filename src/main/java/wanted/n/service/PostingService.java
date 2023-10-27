@@ -11,7 +11,7 @@ public interface PostingService {
 
     Posting getPostingDetail(Long postingId);
 
-    Boolean likePosting(Long postingId);
+    void likePosting(Long postingId);
 
-    Boolean SharePosting(Long postingId);
+    void SharePosting(Long postingId);
 }

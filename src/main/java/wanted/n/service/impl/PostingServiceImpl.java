@@ -59,7 +59,7 @@ public class PostingServiceImpl implements PostingService {
     }
 
     @Override
-    public Boolean likePosting(Long postingId) {
+    public void likePosting(Long postingId) {
         // !WARN! 좋아요 시도 구현 필요
         try{
 
@@ -78,12 +78,10 @@ public class PostingServiceImpl implements PostingService {
                 .likeCount(posting.getLikeCount()+1)
                 .shareCount(posting.getShareCount())
                 .build());
-
-        return null;
     }
 
     @Override
-    public Boolean SharePosting(Long postingId) {
+    public void SharePosting(Long postingId) {
         // !WARN! 공유 시도 구현 필요
         try{
 
@@ -102,7 +100,6 @@ public class PostingServiceImpl implements PostingService {
                 .likeCount(posting.getLikeCount())
                 .shareCount(posting.getShareCount()+1)
                 .build());
-        return null;
     }
 
     static void PageValidCheck(Pageable pageable){
