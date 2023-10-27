@@ -23,7 +23,7 @@ public class PostingServiceImpl implements PostingService {
 
     @Override
     public Page<Posting> getPostingList(PostingSearchRequestDto dto, Pageable pageable) {
-        // !WARN! hashTagId look-up 필요 !WARN!
+        // !WARN! hashTagId look-up 작업 필요 !WARN!
         Long hashTagId = hashTagRepository.findIdByName(dto.getHashTagName())
                 .orElse(hashTagRepository
                         .save(HashTag.builder().name(dto.getHashTagName()).build())
@@ -84,6 +84,12 @@ public class PostingServiceImpl implements PostingService {
 
     @Override
     public Boolean SharePosting(Long postingId) {
+        // !WARN! 공유 시도 구현 필요
+        try{
+
+        }catch(CustomException e){
+        }
+
         Posting posting = postingRepository.findById(postingId)
                 .orElseThrow(()->new CustomException(ErrorCode.POSTING_NOT_FOUND));
 
