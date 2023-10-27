@@ -30,12 +30,10 @@ public class LogFilter implements Filter {
         String requestBody = new String(request.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
 
         // LogPostingDTO 객체로 변환
-        LogPostingDTO dto = objectMapper.readValue(requestBody, LogPostingDTO.class);
-
-        for (String tag : dto.getTag()) {
-            // tag가 존재하는 값인 경우
-            redisService.saveObjectAsJson(new LogDTO(tag, System.currentTimeMillis()));
+        for (String t : objectMapper.readValue(requestBody, LogPostingDTO.class).getTag()) {
+            redisService.saveObjectAsJson(new LogDTO(t, System.currentTimeMillis()));
         }
+
         filterChain.doFilter(request, servletResponse);
     }
 }
