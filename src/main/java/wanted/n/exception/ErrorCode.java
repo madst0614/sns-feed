@@ -22,7 +22,10 @@ public enum ErrorCode {
     INVALID_PASSWORD_USUAL_PASSWORD(HttpStatus.BAD_REQUEST, "통상적으로 자주 사용되는 비밀번호는 사용할 수 없습니다."),
 
     // IOException
-    JSON_EXCEPTION(HttpStatus.BAD_REQUEST, "Json 직렬화에 실패했습니다.");
+    JSON_EXCEPTION(HttpStatus.BAD_REQUEST, "Json 직렬화에 실패했습니다."),
+
+    // Hashtag
+    HOT_HASHTAG_OK(HttpStatus.OK, "최근 3시간동안 많이 사용된 hot hashtag 입니다.");
 
     private final HttpStatus status;
     private final String message;

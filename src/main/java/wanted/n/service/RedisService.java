@@ -67,4 +67,9 @@ public class RedisService {
         }
     }
 
+    // 많이 사용된 순으로 태그 n개 조회
+    public Set<Object> findHotTags(int n) {
+        return redisTemplate.opsForZSet().range(KEY_HOT_HASHTAG, 0, n - 1);
+    }
+
 }
