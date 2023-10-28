@@ -31,7 +31,7 @@ public class UserVerificationTest {
 
     @Mock
     private JwtTokenProvider jwtTokenProvider;
-
+  
     private UserService userService;
 
     @BeforeEach
