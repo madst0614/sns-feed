@@ -27,7 +27,7 @@ public class LogFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
 
-        if (request.getRequestURI().contains("/log")) {
+        if (request.getRequestURI().contains("api/v1/log")) {
             String requestBody = new String(request.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
 
             // LogPostingDTO 객체로 변환

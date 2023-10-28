@@ -13,7 +13,7 @@ import wanted.n.service.RedisService;
 @RestController
 @RequiredArgsConstructor
 @Api(tags = "Log API", description = "hot hashtag 관련 API")
-@RequestMapping("api/v1/log")
+@RequestMapping("/api/v1/log")
 public class LogController {
 
     private final LogService logService;
@@ -27,7 +27,6 @@ public class LogController {
         return "LogController.savePosting";
     }
 
-    
     @ApiOperation(value = "hot hashtag 조회", notes = "최근 3시간 빈번하게 사용된 hashtag 리스트가 반환됩니다.")
     @GetMapping("/hashtags")
     public ResponseEntity<Object> findTagList() {
