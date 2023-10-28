@@ -1,15 +1,16 @@
-package wanted.n.repository.custom;
+package wanted.n.repository.custom.impl;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import wanted.n.domain.HashTag;
+import wanted.n.repository.custom.HashTagRepositoryCustom;
 
 import java.util.Optional;
 
 import static wanted.n.domain.QHashTag.hashTag;
 
 @RequiredArgsConstructor
-public class HashTagRepositoryCustomImpl implements HashTagRepositoryCustom{
+public class HashTagRepositoryCustomImpl implements HashTagRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 

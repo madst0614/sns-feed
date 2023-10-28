@@ -1,4 +1,4 @@
-package wanted.n.dto;
+package wanted.n.dto.posting.request;
 
 import lombok.*;
 import wanted.n.enums.PostingType;

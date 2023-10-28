@@ -21,7 +21,7 @@ public class HashTag {
     private Long id;
 
     @OneToMany(mappedBy = "hashTag")
-    private List<PostingHashTag> hashTagList;
+    private List<PostingHashTag> postingHashTagList;
 
     @Column(unique = true)
     @NotNull

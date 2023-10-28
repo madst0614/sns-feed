@@ -1,4 +1,4 @@
-package wanted.n.repository.custom;
+package wanted.n.repository.custom.impl;
 
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -13,8 +13,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import wanted.n.domain.Posting;
-import wanted.n.dto.PostingSearchConditionDTO;
+import wanted.n.dto.posting.PostingSearchConditionDTO;
 import wanted.n.enums.PostingType;
+import wanted.n.repository.custom.PostingRepositoryCustom;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -11,8 +11,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 import wanted.n.domain.HashTag;
 import wanted.n.domain.Posting;
-import wanted.n.dto.PostingSearchConditionDTO;
-import wanted.n.dto.PostingSearchRequestDTO;
+import wanted.n.dto.posting.PostingSearchConditionDTO;
+import wanted.n.dto.posting.request.PostingSearchRequestDTO;
 import wanted.n.enums.PostingType;
 import wanted.n.enums.SearchType;
 import wanted.n.repository.HashTagRepository;
@@ -57,15 +57,14 @@ public class PostingServiceImplTest {
         final PostingSearchConditionDTO postingSearchConditionDto = PostingSearchConditionDTO.of(1L, postingSearchRequestDto);
         final Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "createdAt");
 
-        List<Posting> expectPostingList = new ArrayList<>();
-        expectPostingList.add(Posting.builder().id(1L).type(PostingType.INSTAGRAM).title("키워드").build());
-        Page<Posting> expect = new PageImpl<>(expectPostingList);
+        List<Posting> expect = new ArrayList<>();
+        expect.add(Posting.builder().id(1L).type(PostingType.INSTAGRAM).title("키워드").build());
 
          when(hashTagRepository.findByName(any())).thenReturn(Optional.of(HashTag.builder().id(1L).name("test").build()));
-         when(postingRepository.findPostingPageByCondition(any(), any())).thenReturn(expect);
+         when(postingRepository.findPostingPageByCondition(any(), any())).thenReturn(new PageImpl<>(expect));
 
          //When
-        Page<Posting> result = postingServiceImpl.getPostingList(postingSearchRequestDto, pageable);
+        List<Posting> result = postingServiceImpl.getPostingList(postingSearchRequestDto, pageable).getPostingList();
 
         //Then
         assertThat(result).isEqualTo(expect);

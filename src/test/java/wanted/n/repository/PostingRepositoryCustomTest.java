@@ -1,8 +1,8 @@
 package wanted.n.repository;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
@@ -10,12 +10,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import wanted.n.config.QuerydslConfig;
 import wanted.n.domain.HashTag;
 import wanted.n.domain.Posting;
 import wanted.n.domain.PostingHashTag;
-import wanted.n.dto.PostingSearchConditionDTO;
+import wanted.n.dto.posting.PostingSearchConditionDTO;
 import wanted.n.enums.PostingType;
 import wanted.n.enums.SearchType;
 
@@ -26,17 +25,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 @Import({QuerydslConfig.class})
-@EnableJpaAuditing
+@RequiredArgsConstructor
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DisplayName("PostingRepository 테스트")
 public class PostingRepositoryCustomTest {
 
-    @Autowired
     private PostingRepository postingRepository;
-    @Autowired
     private HashTagRepository hashTagRepository;
-    @Autowired
     private PostingHashTagRepository postingHashTagRepository;
 
     // createdAt,updatedAt 테스트는 기존 만들어진 데이터로 진행

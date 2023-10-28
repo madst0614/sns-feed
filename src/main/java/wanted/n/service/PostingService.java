@@ -1,16 +1,19 @@
 package wanted.n.service;
 
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import wanted.n.domain.Posting;
-import wanted.n.dto.PostingSearchRequestDTO;
+import wanted.n.dto.posting.request.PostingDetailRequestDTO;
+import wanted.n.dto.posting.request.PostingExternalFeaturesRequestDTO;
+import wanted.n.dto.posting.response.PostingDetailResponseDTO;
+import wanted.n.dto.posting.request.PostingSearchRequestDTO;
+import wanted.n.dto.posting.response.PostingSearchResponseDTO;
 
 public interface PostingService {
-    Page<Posting> getPostingList(PostingSearchRequestDTO dto, Pageable pageable);
-    Posting getPostingDetail(Long postingId);
+    PostingSearchResponseDTO getPostingList(
+            PostingSearchRequestDTO postingSearchRequestDTO, Pageable pageable);
+    PostingDetailResponseDTO getPostingDetail(PostingDetailRequestDTO postingDetailRequestDTO);
 
-    void likePosting(Long postingId);
+    void likePosting(PostingExternalFeaturesRequestDTO postingExternalFeaturesRequestDTO);
 
-    void sharePosting(Long postingId);
+    void sharePosting(PostingExternalFeaturesRequestDTO postingExternalFeaturesRequestDTO);
 }

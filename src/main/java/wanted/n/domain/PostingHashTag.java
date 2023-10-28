@@ -22,7 +22,6 @@ public class PostingHashTag{
     private Posting posting;
 
     @Id
-    @MapsId
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "hashtag_id")
     private HashTag hashTag;

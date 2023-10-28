@@ -1,12 +1,11 @@
-package wanted.n.dto;
+package wanted.n.dto.posting;
 
 import lombok.*;
+import wanted.n.dto.posting.request.PostingSearchRequestDTO;
 import wanted.n.enums.PostingType;
 import wanted.n.enums.SearchType;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @Builder
 public class PostingSearchConditionDTO {
     // 1건의 태그

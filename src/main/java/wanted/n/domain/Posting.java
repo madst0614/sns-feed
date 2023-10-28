@@ -29,7 +29,7 @@ public class Posting extends BaseEntity{
     private PostingType type;
 
     @OneToMany(mappedBy = "posting")
-    private List<PostingHashTag> hashTagList;
+    private List<PostingHashTag> postingHashTagList;
 
     @Column(name = "view_count")
     @ColumnDefault("0")
