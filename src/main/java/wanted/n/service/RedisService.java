@@ -34,12 +34,14 @@ import static wanted.n.exception.ErrorCode.OTP_EXPIRED;
 public class RedisService {
 
     private final RedisTemplate<String, Object> redisTemplate;
+    private final StringRedisTemplate stringRedisTemplate;
     private final ObjectMapper objectMapper;
 
     private final static String KEY_TAG = "tag:"; // 태그를 저장하는 키
     private final static String KEY_HOT_HASHTAG = "tags"; // 핫 해시태그 리스트를 저장하는 키
     private final static Integer TIMES = 3 * 60 * 60 * 1000;
     private final static String KEY_OTP = "otp: ";
+    private final static String KEY_TOKEN = "token: ";
 
     // 객체를 JSON 형식으로 변환시켜 sorted set 저장
     public void saveLogAsJson(LogDTO log) {
@@ -108,9 +110,9 @@ public class RedisService {
      * @param expireTime 키와 값의 만료 시간(분 단위)
      */
     private void saveKeyAndValue(String key, String value, int expireTime) {
-        ValueOperations<String, String> ops = redisTemplate.opsForValue();
+        ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
         ops.set(key, value);
-        redisTemplate.expire(key, expireTime, TimeUnit.MINUTES);
+        stringRedisTemplate.expire(key, expireTime, TimeUnit.MINUTES);
     }
 
     /**
@@ -125,15 +127,21 @@ public class RedisService {
         String key = KEY_OTP + email;
 
         // Redis에 해당 이메일을 키로 한 OTP 정보가 존재하지 않으면 OTP가 만료되었음을 의미
-        if (Boolean.FALSE.equals(redisTemplate.hasKey(key))) {
+        if (Boolean.FALSE.equals(stringRedisTemplate.hasKey(key))) {
             throw new CustomException(OTP_EXPIRED);
         }
 
-        String storedOtp = redisTemplate.opsForValue().get(key);
+        String storedOtp = stringRedisTemplate.opsForValue().get(key);
 
         // 입력한 OTP가 저장된 OTP와 일치하지 않을 경우 예외 발생
         if (!otp.equals(storedOtp)) {
             throw new CustomException(INVALID_OTP);
         }
+    }
+
+    @Transactional
+    public void saveRefreshToken(String email, String refreshToken) {
+        String key = KEY_TOKEN + email;
+        saveKeyAndValue(key, refreshToken, 1440);
     }
 }
