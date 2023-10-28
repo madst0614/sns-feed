@@ -12,6 +12,8 @@ import org.springframework.data.domain.*;
 import wanted.n.domain.HashTag;
 import wanted.n.domain.Posting;
 import wanted.n.dto.posting.PostingSearchConditionDTO;
+import wanted.n.dto.posting.request.PostingDetailRequestDTO;
+import wanted.n.dto.posting.request.PostingExternalFeaturesRequestDTO;
 import wanted.n.dto.posting.request.PostingSearchRequestDTO;
 import wanted.n.enums.PostingType;
 import wanted.n.enums.SearchType;
@@ -25,7 +27,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("PostingService 테스트")
@@ -68,5 +70,72 @@ public class PostingServiceImplTest {
 
         //Then
         assertThat(result).isEqualTo(expect);
+    }
+
+    @Test
+    @DisplayName("GetPostingDetail 테스트")
+    public void getPostingDetailTest(){
+        //Given
+        final PostingDetailRequestDTO postingDetailRequestDTO = PostingDetailRequestDTO.builder()
+                .postingId(1L)
+                .build();
+
+        Posting expect = Posting.builder().id(1L).title("테스트").type(PostingType.INSTAGRAM).viewCount(0L).build();
+
+        when(postingRepository.findById(1L)).thenReturn( Optional.of(Posting.builder().id(1L).title("테스트").type(PostingType.INSTAGRAM).viewCount(1L).build()));
+        when(postingRepository.save(any())).thenReturn(Posting.builder().id(1L).title("테스트").type(PostingType.INSTAGRAM).viewCount(1L).build());
+
+
+        //When
+        Posting result = postingServiceImpl.getPostingDetail(postingDetailRequestDTO).getPosting();
+
+        //Then
+        assertThat(result.getId()).isEqualTo(expect.getId());
+        assertThat(result.getTitle()).isEqualTo(expect.getTitle());
+        assertThat(result.getContent()).isEqualTo(expect.getContent());
+        assertThat(result.getType()).isEqualTo(expect.getType());
+        assertThat(result.getPostingHashTagList()).isEqualTo(expect.getPostingHashTagList());
+        assertThat(result.getViewCount()).isEqualTo(expect.getViewCount()+1L);
+        assertThat(result.getLikeCount()).isEqualTo(expect.getLikeCount());
+        assertThat(result.getShareCount()).isEqualTo(expect.getShareCount());
+    }
+
+    @Test
+    @DisplayName("likePosting 테스트")
+    public void likePostingTest(){
+        //Given
+        final PostingExternalFeaturesRequestDTO postingExternalFeaturesRequestDTO =
+                PostingExternalFeaturesRequestDTO.builder().postingId(1L).build();
+
+        when(postingRepository.findById(1L)).thenReturn( Optional.of(Posting.builder().id(1L).title("테스트").type(PostingType.INSTAGRAM).likeCount(1L).build()));
+
+        //When
+        postingServiceImpl.likePosting(postingExternalFeaturesRequestDTO);
+
+        //Then
+        verify(postingRepository, times(1))
+                .save(argThat(posting ->
+                        posting.getId().equals(postingExternalFeaturesRequestDTO.getPostingId())
+                ));
+    }
+
+
+    @Test
+    @DisplayName("sharePosting 테스트")
+    public void sharePostingTest(){
+        //Given
+        final PostingExternalFeaturesRequestDTO postingExternalFeaturesRequestDTO =
+                PostingExternalFeaturesRequestDTO.builder().postingId(1L).build();
+
+        when(postingRepository.findById(1L)).thenReturn( Optional.of(Posting.builder().id(1L).title("테스트").type(PostingType.INSTAGRAM).shareCount(1L).build()));
+
+        //When
+        postingServiceImpl.sharePosting(postingExternalFeaturesRequestDTO);
+
+        //Then
+        verify(postingRepository, times(1))
+                .save(argThat(posting ->
+                        posting.getId().equals(postingExternalFeaturesRequestDTO.getPostingId())
+                ));
     }
 }
