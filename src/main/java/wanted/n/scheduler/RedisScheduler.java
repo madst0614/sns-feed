@@ -25,4 +25,13 @@ public class RedisScheduler {
         // 로그 추가
         log.info("최근 3시간 빈도높은 태그 저장 완료: " + LocalDateTime.now());
     }
+
+    @Scheduled(cron = "0 0 */12 * * *") // 매 12시간마다 실행
+    public void checkOnFire() {
+        logService.checkPostingOnFireEmail();
+
+        // 로그 추가
+        log.info("단기간 급상승 게시물 알림 완료");
+    }
+
 }
