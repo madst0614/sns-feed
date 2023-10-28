@@ -58,9 +58,9 @@ public class JwtTokenProvider {
     }
 
     /* Refresh Token 생성 메서드 - 클레임에 이메일 삽입 (추후 엑세스 토큰 재발급 시 사용예정)*/
-    public String generateRefreshToken(String email) {
+    public String generateRefreshToken(String account) {
         return Jwts.builder()
-                .claim("email", email)
+                .claim("account", account)
                 .setIssuer(issuer)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 // 유효 기간 24시간
