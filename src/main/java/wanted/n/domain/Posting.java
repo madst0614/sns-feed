@@ -31,15 +31,15 @@ public class Posting extends BaseEntity{
     @OneToMany(mappedBy = "posting")
     private List<PostingHashTag> postingHashTagList;
 
-    @Column(name = "view_count")
+    @Column(name = "view_count",nullable = false)
     @ColumnDefault("0")
     private Long viewCount;
 
-    @Column(name = "like_count")
+    @Column(name = "like_count",nullable = false)
     @ColumnDefault("0")
     private Long likeCount;
 
-    @Column(name = "share_count")
+    @Column(name = "share_count",nullable = false)
     @ColumnDefault("0")
     private Long shareCount;
 }

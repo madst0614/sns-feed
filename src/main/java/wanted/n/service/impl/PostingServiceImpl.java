@@ -59,13 +59,23 @@ public class PostingServiceImpl implements PostingService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public PostingDetailResponseDTO getPostingDetail(PostingDetailRequestDTO postingDetailRequestDTO) {
+        Posting posting = postingRepository
+                .findById(postingDetailRequestDTO.getPostingId())
+                .orElseThrow(()->new CustomException(ErrorCode.POSTING_NOT_FOUND));
 
         return PostingDetailResponseDTO.builder()
-                .posting( postingRepository
-                        .findById(postingDetailRequestDTO.getPostingId())
-                        .orElseThrow(()->new CustomException(ErrorCode.POSTING_NOT_FOUND)))
+                .posting(postingRepository.save(Posting.builder()
+                                .id(posting.getId())
+                                .title(posting.getTitle())
+                                .content(posting.getContent())
+                                .type(posting.getType())
+                                .viewCount(posting.getViewCount())
+                                .likeCount(posting.getLikeCount())
+                                .shareCount(posting.getShareCount())
+                                .build())
+                        )
                 .build();
     }
 
@@ -87,7 +97,7 @@ public class PostingServiceImpl implements PostingService {
                 .content(posting.getContent())
                 .type(posting.getType())
                 .viewCount(posting.getViewCount())
-                .likeCount(posting.getLikeCount()+1)
+                .likeCount(posting.getLikeCount()+1L)
                 .shareCount(posting.getShareCount())
                 .build());
     }
@@ -111,7 +121,7 @@ public class PostingServiceImpl implements PostingService {
                 .type(posting.getType())
                 .viewCount(posting.getViewCount())
                 .likeCount(posting.getLikeCount())
-                .shareCount(posting.getShareCount()+1)
+                .shareCount(posting.getShareCount()+1L)
                 .build());
     }
 
