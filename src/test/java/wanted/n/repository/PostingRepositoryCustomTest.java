@@ -15,7 +15,7 @@ import wanted.n.config.QuerydslConfig;
 import wanted.n.domain.HashTag;
 import wanted.n.domain.Posting;
 import wanted.n.domain.PostingHashTag;
-import wanted.n.dto.PostingSearchConditionDto;
+import wanted.n.dto.PostingSearchConditionDTO;
 import wanted.n.enums.PostingType;
 import wanted.n.enums.SearchType;
 
@@ -48,7 +48,7 @@ public class PostingRepositoryCustomTest {
 
         //Given(2) - init search condition(hashTagId=1L, page=0, size=5, order by=createdAt/DESC)
         // hashTagId 1L에는 기존 테스트용 데이터
-        final PostingSearchConditionDto dto = PostingSearchConditionDto.builder().hashTagId(1L).build();
+        final PostingSearchConditionDTO dto = PostingSearchConditionDTO.builder().hashTagId(1L).build();
         final Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "createdAt");
 
         //When
@@ -70,7 +70,7 @@ public class PostingRepositoryCustomTest {
 
         //Given(2) - init search condition(hashTagId=1L, page=0, size=5, order by=createdAt/DESC)
         // hashTagId 1L에는 기존 테스트용 데이터
-        final PostingSearchConditionDto dto = PostingSearchConditionDto.builder().hashTagId(1L).build();
+        final PostingSearchConditionDTO dto = PostingSearchConditionDTO.builder().hashTagId(1L).build();
         final Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "updatedAt");
 
         //When
@@ -91,7 +91,7 @@ public class PostingRepositoryCustomTest {
         List<HashTag> hashTagList = initData();
         //Given(2) - init search condition(hashTagId=1L, page=0, size=5, order by=createdAt/DESC)
         // hashTagId 1L=기존 테스트 데이터 인덱스0=공부 인덱스1=놀자 인덱스2=취업 인덱스3=취미
-        final PostingSearchConditionDto dto = PostingSearchConditionDto.builder().hashTagId(hashTagList.get(0).getId()).build();
+        final PostingSearchConditionDTO dto = PostingSearchConditionDTO.builder().hashTagId(hashTagList.get(0).getId()).build();
         final Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "likeCount");
 
         //When
@@ -114,7 +114,7 @@ public class PostingRepositoryCustomTest {
         List<HashTag> hashTagList = initData();
         //Given(2) - init search condition(hashTagId=1L, page=0, size=5, order by=createdAt/DESC)
         // hashTagId 1L=기존 테스트 데이터 인덱스0=공부 인덱스1=놀자 인덱스2=취업 인덱스3=취미
-        final PostingSearchConditionDto dto = PostingSearchConditionDto.builder().hashTagId(hashTagList.get(1).getId()).build();
+        final PostingSearchConditionDTO dto = PostingSearchConditionDTO.builder().hashTagId(hashTagList.get(1).getId()).build();
         final Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "shareCount");
 
         //When
@@ -137,7 +137,7 @@ public class PostingRepositoryCustomTest {
         List<HashTag> hashTagList = initData();
         //Given(2) - init search condition(hashTagId=1L, page=0, size=5, order by=createdAt/DESC)
         // hashTagId 1L=기존 테스트 데이터 인덱스0=공부 인덱스1=놀자 인덱스2=취업 인덱스3=취미
-        final PostingSearchConditionDto dto = PostingSearchConditionDto.builder().hashTagId(hashTagList.get(2).getId()).build();
+        final PostingSearchConditionDTO dto = PostingSearchConditionDTO.builder().hashTagId(hashTagList.get(2).getId()).build();
         final Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "viewCount");
 
         //When
@@ -160,7 +160,7 @@ public class PostingRepositoryCustomTest {
         List<HashTag> hashTagList = initData();
         //Given(2) - init search condition(hashTagId=1L, page=0, size=5, order by=createdAt/DESC)
         // hashTagId 1L=기존 테스트 데이터 인덱스0=공부 인덱스1=놀자 인덱스2=취업 인덱스3=취미
-        final PostingSearchConditionDto dto = PostingSearchConditionDto.builder().hashTagId(1L).type(PostingType.INSTAGRAM).build();
+        final PostingSearchConditionDTO dto = PostingSearchConditionDTO.builder().hashTagId(1L).type(PostingType.INSTAGRAM).build();
         final Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "id");
 
         //When
@@ -183,7 +183,7 @@ public class PostingRepositoryCustomTest {
         List<HashTag> hashTagList = initData();
         //Given(2) - init search condition(hashTagId=1L, page=0, size=5, order by=createdAt/DESC)
         // hashTagId 1L=기존 테스트 데이터 인덱스0=공부 인덱스1=놀자 인덱스2=취업 인덱스3=취미
-        final PostingSearchConditionDto dto = PostingSearchConditionDto.builder().hashTagId(1L).searchType(SearchType.T).searchKeyword("취미").build();
+        final PostingSearchConditionDTO dto = PostingSearchConditionDTO.builder().hashTagId(1L).searchType(SearchType.T).searchKeyword("취미").build();
         final Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "id");
 
         //When
@@ -206,7 +206,7 @@ public class PostingRepositoryCustomTest {
         List<HashTag> hashTagList = initData();
         //Given(2) - init search condition(hashTagId=1L, page=0, size=5, order by=createdAt/DESC)
         // hashTagId 1L=기존 테스트 데이터 인덱스0=공부 인덱스1=놀자 인덱스2=취업 인덱스3=취미
-        final PostingSearchConditionDto dto = PostingSearchConditionDto.builder().hashTagId(1L).searchType(SearchType.C).searchKeyword("쉴땐").build();
+        final PostingSearchConditionDTO dto = PostingSearchConditionDTO.builder().hashTagId(1L).searchType(SearchType.C).searchKeyword("쉴땐").build();
         final Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "id");
 
         //When
@@ -229,7 +229,7 @@ public class PostingRepositoryCustomTest {
         List<HashTag> hashTagList = initData();
         //Given(2) - init search condition(hashTagId=1L, page=0, size=5, order by=createdAt/DESC)
         // hashTagId 1L=기존 테스트 데이터 인덱스0=공부 인덱스1=놀자 인덱스2=취업 인덱스3=취미
-        final PostingSearchConditionDto dto = PostingSearchConditionDto.builder().hashTagId(1L).searchType(SearchType.TC).searchKeyword("쉴땐").build();
+        final PostingSearchConditionDTO dto = PostingSearchConditionDTO.builder().hashTagId(1L).searchType(SearchType.TC).searchKeyword("쉴땐").build();
         final Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "id");
 
         //When
@@ -252,7 +252,7 @@ public class PostingRepositoryCustomTest {
         List<HashTag> hashTagList = initData();
         //Given(2) - init search condition(hashTagId=1L, page=0, size=5, order by=createdAt/DESC)
         // hashTagId 1L=기존 테스트 데이터 인덱스0=공부 인덱스1=놀자 인덱스2=취업 인덱스3=취미
-        final PostingSearchConditionDto dto = PostingSearchConditionDto.builder().hashTagId(1L).searchType(SearchType.TC).searchKeyword("테스트").build();
+        final PostingSearchConditionDTO dto = PostingSearchConditionDTO.builder().hashTagId(1L).searchType(SearchType.TC).searchKeyword("테스트").build();
         final Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "id");
 
         //When
@@ -275,7 +275,7 @@ public class PostingRepositoryCustomTest {
         List<HashTag> hashTagList = initData();
         //Given(2) - init search condition(hashTagId=1L, page=0, size=5, order by=createdAt/DESC)
         // hashTagId 1L=기존 테스트 데이터 인덱스0=공부 인덱스1=놀자 인덱스2=취업 인덱스3=취미
-        final PostingSearchConditionDto dto = PostingSearchConditionDto.builder().hashTagId(1L).build();
+        final PostingSearchConditionDTO dto = PostingSearchConditionDTO.builder().hashTagId(1L).build();
         final Pageable pageable = PageRequest.of(0, 5, Sort.Direction.ASC, "id");
 
         //When
@@ -299,7 +299,7 @@ public class PostingRepositoryCustomTest {
         List<HashTag> hashTagList = initData();
         //Given(2) - init search condition(hashTagId=1L, page=0, size=5, order by=createdAt/DESC)
         // hashTagId 1L=기존 테스트 데이터 인덱스0=공부 인덱스1=놀자 인덱스2=취업 인덱스3=취미
-        final PostingSearchConditionDto dto = PostingSearchConditionDto.builder().hashTagId(1L).build();
+        final PostingSearchConditionDTO dto = PostingSearchConditionDTO.builder().hashTagId(1L).build();
         final Pageable pageable = PageRequest.of(1, 5, Sort.Direction.ASC, "id");
 
         //When
@@ -323,7 +323,7 @@ public class PostingRepositoryCustomTest {
         List<HashTag> hashTagList = initData();
         //Given(2) - init search condition(hashTagId=1L, page=0, size=5, order by=createdAt/DESC)
         // hashTagId 1L=기존 테스트 데이터 인덱스0=공부 인덱스1=놀자 인덱스2=취업 인덱스3=취미
-        final PostingSearchConditionDto dto = PostingSearchConditionDto.builder().hashTagId(1L).build();
+        final PostingSearchConditionDTO dto = PostingSearchConditionDTO.builder().hashTagId(1L).build();
         final Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "id");
 
         //When

@@ -6,8 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import wanted.n.domain.HashTag;
 import wanted.n.domain.Posting;
-import wanted.n.dto.PostingSearchConditionDto;
-import wanted.n.dto.PostingSearchRequestDto;
+import wanted.n.dto.PostingSearchConditionDTO;
+import wanted.n.dto.PostingSearchRequestDTO;
 import wanted.n.exception.CustomException;
 import wanted.n.exception.ErrorCode;
 import wanted.n.repository.HashTagRepository;
@@ -24,15 +24,15 @@ public class PostingServiceImpl implements PostingService {
     HashTagRepository hashTagRepository;
 
     @Override
-    public Page<Posting> getPostingList(PostingSearchRequestDto dto, Pageable pageable) {
+    public Page<Posting> getPostingList(PostingSearchRequestDTO dto, Pageable pageable) {
         // !WARN! hashTagId look-up 작업 필요 !WARN!
         Optional<HashTag> hashTag = hashTagRepository.findByName(dto.getHashTagName());
         if(hashTag.isEmpty()){
             hashTag = Optional.of(hashTagRepository.save(HashTag.builder().name(dto.getHashTagName()).build()));
         }
 
-        PostingSearchConditionDto postingSearchConditionDto
-                = PostingSearchConditionDto.builder()
+        PostingSearchConditionDTO postingSearchConditionDto
+                = PostingSearchConditionDTO.builder()
                 .hashTagId(hashTag.get().getId())
                 .type(dto.getType())
                 .searchType(dto.getSearchType())

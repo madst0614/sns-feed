@@ -11,8 +11,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 import wanted.n.domain.HashTag;
 import wanted.n.domain.Posting;
-import wanted.n.dto.PostingSearchConditionDto;
-import wanted.n.dto.PostingSearchRequestDto;
+import wanted.n.dto.PostingSearchConditionDTO;
+import wanted.n.dto.PostingSearchRequestDTO;
 import wanted.n.enums.PostingType;
 import wanted.n.enums.SearchType;
 import wanted.n.repository.HashTagRepository;
@@ -48,13 +48,13 @@ public class PostingServiceImplTest {
     @DisplayName("GetPostingList 테스트")
     public void getPostingListTest(){
         //Given
-        final PostingSearchRequestDto postingSearchRequestDto = PostingSearchRequestDto.builder()
+        final PostingSearchRequestDTO postingSearchRequestDto = PostingSearchRequestDTO.builder()
                 .hashTagName("test")
                 .type(PostingType.INSTAGRAM)
                 .searchType(SearchType.T)
                 .searchKeyword("키워드")
                 .build();
-        final PostingSearchConditionDto postingSearchConditionDto = PostingSearchConditionDto.of(1L, postingSearchRequestDto);
+        final PostingSearchConditionDTO postingSearchConditionDto = PostingSearchConditionDTO.of(1L, postingSearchRequestDto);
         final Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "createdAt");
 
         List<Posting> expectPostingList = new ArrayList<>();

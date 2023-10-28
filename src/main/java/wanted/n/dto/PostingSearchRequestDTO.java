@@ -7,7 +7,7 @@ import wanted.n.enums.SearchType;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class PostingSearchRequestDto {
+public class PostingSearchRequestDTO {
     // 1건의 태그
     private String hashTagName;
 

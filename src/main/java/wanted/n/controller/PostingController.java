@@ -2,7 +2,6 @@ package wanted.n.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,17 +12,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wanted.n.config.JwtTokenProvider;
 import wanted.n.domain.Posting;
-import wanted.n.dto.PostingSearchRequestDto;
+import wanted.n.dto.PostingSearchRequestDTO;
 import wanted.n.enums.PostingType;
 import wanted.n.enums.SearchType;
 import wanted.n.service.PostingService;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import javax.servlet.http.HttpServletRequest;
+
 import javax.validation.Valid;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/posting")
+@RequestMapping("/api/v1/posting")
 @Api(tags="Posting API", description="포스팅과 관련된 API")
 @RestController
 public class PostingController {
@@ -44,7 +43,7 @@ public class PostingController {
             hashtagname = jwtTokenProvider.getAccountFromToken(token);
         }
 
-        PostingSearchRequestDto postingSearchRequestDto = PostingSearchRequestDto.builder()
+        PostingSearchRequestDTO postingSearchRequestDto = PostingSearchRequestDTO.builder()
                 .hashTagName(hashtagname)
                 .type(type).searchType(searchType).searchKeyword(searchKeyword)
                 .build();

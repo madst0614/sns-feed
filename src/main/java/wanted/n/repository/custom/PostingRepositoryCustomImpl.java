@@ -13,7 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import wanted.n.domain.Posting;
-import wanted.n.dto.PostingSearchConditionDto;
+import wanted.n.dto.PostingSearchConditionDTO;
 import wanted.n.enums.PostingType;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class PostingRepositoryCustomImpl implements PostingRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<Posting> findPostingPageByCondition(PostingSearchConditionDto dto, Pageable pageable){
+    public Page<Posting> findPostingPageByCondition(PostingSearchConditionDTO dto, Pageable pageable){
 
         // (베이스 쿼리) hashtag, type 조건
         JPQLQuery<Posting> query = queryFactory

@@ -8,7 +8,7 @@ import wanted.n.enums.SearchType;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class PostingSearchConditionDto {
+public class PostingSearchConditionDTO {
     // 1건의 태그
     private Long hashTagId;
 
@@ -18,8 +18,8 @@ public class PostingSearchConditionDto {
     private SearchType searchType;
     private String searchKeyword;
 
-    public static PostingSearchConditionDto of(Long hashTagId, PostingSearchRequestDto dto){
-        return PostingSearchConditionDto.builder()
+    public static PostingSearchConditionDTO of(Long hashTagId, PostingSearchRequestDTO dto){
+        return PostingSearchConditionDTO.builder()
                 .hashTagId(hashTagId)
                 .type(dto.getType())
                 .searchType(dto.getSearchType())
