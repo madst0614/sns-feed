@@ -10,5 +10,5 @@ import java.util.List;
 @Getter
 @Setter
 public class LogPostingDTO {
-    private List<String> tag;
+    private List<Long> tag;
 }
