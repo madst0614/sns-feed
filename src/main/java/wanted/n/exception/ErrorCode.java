@@ -19,7 +19,10 @@ public enum ErrorCode {
     INVALID_PASSWORD_AT_LEAST_2_TYPES(HttpStatus.BAD_REQUEST, "숫자, 문자, 특수문자 중 2가지 이상을 포함해야 합니다."),
     INVALID_PASSWORD_SAME_CHARACTERS(HttpStatus.BAD_REQUEST, "동일한 문자가 3개 이상 연속되면 사용할 수 없습니다"),
     INVALID_PASSWORD_CONSECUTIVE_CHARACTERS(HttpStatus.BAD_REQUEST, "연속된 문자가 3개 이상 포함되면 사용할 수 없습니다"),
-    INVALID_PASSWORD_USUAL_PASSWORD(HttpStatus.BAD_REQUEST, "통상적으로 자주 사용되는 비밀번호는 사용할 수 없습니다.");
+    INVALID_PASSWORD_USUAL_PASSWORD(HttpStatus.BAD_REQUEST, "통상적으로 자주 사용되는 비밀번호는 사용할 수 없습니다."),
+
+    // IOException
+    JSON_EXCEPTION(HttpStatus.BAD_REQUEST, "Json 직렬화에 실패했습니다.");
 
     private final HttpStatus status;
     private final String message;
