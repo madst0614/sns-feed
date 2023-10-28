@@ -104,7 +104,6 @@ public class UserController {
 
         redisService.deleteRefreshToken(account);
 
-
         return ResponseEntity.status(NO_CONTENT).build();
     }
 }

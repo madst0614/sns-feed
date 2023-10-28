@@ -18,14 +18,12 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
-import static wanted.n.exception.ErrorCode.JSON_EXCEPTION;
-
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import static wanted.n.exception.ErrorCode.INVALID_OTP;
 import static wanted.n.exception.ErrorCode.OTP_EXPIRED;
+import static wanted.n.exception.ErrorCode.JSON_EXCEPTION;
 
 @Slf4j
 @Service
@@ -142,7 +140,6 @@ public class RedisService {
             String valueFuture = otp.get();
             saveKeyAndValue(KEY_OTP + account, valueFuture, 10);
             log.info("OTP 저장 완료! OTP 생성자 : " + account);
-
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException("OTP 결과 가져오기 및 임시저장 실패", e);
         }
@@ -198,53 +195,4 @@ public class RedisService {
         stringRedisTemplate.delete(key);
     }
 
-    /**
-     * Redis에 저장된 OTP 값과 사용자가 입력한 OTP 값을 비교하는 메서드
-     * 일치할 경우에는 OTP 를 삭제
-     *
-     * @param email
-     * @param otp
-     */
-    @Transactional(readOnly = true)
-    public void otpVerification(String email, String otp) {
-        String key = KEY_OTP + email;
-
-        // Redis에 해당 이메일을 키로 한 OTP 정보가 존재하지 않으면 OTP가 만료되었음을 의미
-        if (Boolean.FALSE.equals(stringRedisTemplate.hasKey(key))) {
-            throw new CustomException(OTP_EXPIRED);
-        }
-
-        String storedOtp = stringRedisTemplate.opsForValue().get(key);
-
-        // 입력한 OTP가 저장된 OTP와 일치하지 않을 경우 예외 발생
-        if (!otp.equals(storedOtp)) {
-            throw new CustomException(INVALID_OTP);
-        }
-    }
-
-    /**
-     * 사용자 이메일과 리프레시 토큰을 저장하는 메서드입니다.
-     *
-     * @param email       사용자 이메일
-     * @param refreshToken 리프레시 토큰
-     */
-    @Transactional
-    public void saveRefreshToken(String email, String refreshToken) {
-        // 이메일을 기반으로 한 식별키를 생성합니다.
-        String key = KEY_TOKEN + email;
-
-        // 생성된 식별키와 리프레시 토큰을 저장하며, 토큰의 유효 기간은 1440분(24시간)으로 설정합니다.
-        saveKeyAndValue(key, refreshToken, 1440);
-    }
-
-    /**
-     * 로그아웃 시 사용자 리프레시토큰을 삭제하는 메서드입니다.
-     *
-     * @param email       사용자 이메일
-     */
-    @Transactional
-    public void deleteRefreshToken(String email) {
-        String key = KEY_TOKEN + email;
-        stringRedisTemplate.delete(key);
-    }
 }
