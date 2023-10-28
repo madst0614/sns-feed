@@ -16,8 +16,4 @@ public class PostingSearchRequestDto {
     // Search
     private SearchType searchType;
     private String searchKeyword;
-
-    // Pageable
-    // default created_At
-    private String orderBy;
 }

@@ -1,6 +1,6 @@
 package wanted.n.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,11 +14,11 @@ import wanted.n.repository.HashTagRepository;
 import wanted.n.repository.PostingRepository;
 import wanted.n.service.PostingService;
 
+@RequiredArgsConstructor
 @Service
 public class PostingServiceImpl implements PostingService {
-    @Autowired
+
     PostingRepository postingRepository;
-    @Autowired
     HashTagRepository hashTagRepository;
 
     @Override
