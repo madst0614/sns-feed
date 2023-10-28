@@ -12,5 +12,5 @@ public interface PostingService {
 
     void likePosting(Long postingId);
 
-    void SharePosting(Long postingId);
+    void sharePosting(Long postingId);
 }

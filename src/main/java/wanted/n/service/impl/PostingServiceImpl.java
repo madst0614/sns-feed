@@ -14,6 +14,8 @@ import wanted.n.repository.HashTagRepository;
 import wanted.n.repository.PostingRepository;
 import wanted.n.service.PostingService;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Service
 public class PostingServiceImpl implements PostingService {
@@ -24,15 +26,14 @@ public class PostingServiceImpl implements PostingService {
     @Override
     public Page<Posting> getPostingList(PostingSearchRequestDto dto, Pageable pageable) {
         // !WARN! hashTagId look-up 작업 필요 !WARN!
-        Long hashTagId = hashTagRepository.findIdByName(dto.getHashTagName())
-                .orElse(hashTagRepository
-                        .save(HashTag.builder().name(dto.getHashTagName()).build())
-                        .getId()
-                );
+        Optional<HashTag> hashTag = hashTagRepository.findByName(dto.getHashTagName());
+        if(hashTag.isEmpty()){
+            hashTag = Optional.of(hashTagRepository.save(HashTag.builder().name(dto.getHashTagName()).build()));
+        }
 
         PostingSearchConditionDto postingSearchConditionDto
                 = PostingSearchConditionDto.builder()
-                .hashTagId(hashTagId)
+                .hashTagId(hashTag.get().getId())
                 .type(dto.getType())
                 .searchType(dto.getSearchType())
                 .searchKeyword(dto.getSearchKeyword())
@@ -81,7 +82,7 @@ public class PostingServiceImpl implements PostingService {
     }
 
     @Override
-    public void SharePosting(Long postingId) {
+    public void sharePosting(Long postingId) {
         // !WARN! 공유 시도 구현 필요
         try{
 
