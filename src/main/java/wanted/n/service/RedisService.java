@@ -48,10 +48,10 @@ public class RedisService {
         return redisTemplate.keys(key);
     }
 
-    // key에 따라 특정 시간 동안 데이터 개수 반환
-    public long countDataWithTime(String key, double startTime, double lastTime) {
-        return Objects.requireNonNullElse(redisTemplate.opsForZSet()
-                .count(key, startTime, lastTime), 0).longValue();
+    // key에 따라 데이터 개수 반환
+    public long countDataWithTime(String key) {
+        Long count = redisTemplate.opsForZSet().zCard(key);
+        return Objects.requireNonNullElse(count, 0L);
     }
 
     // 태그 리스트를 저장

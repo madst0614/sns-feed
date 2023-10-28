@@ -2,7 +2,6 @@ package wanted.n.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -22,22 +21,20 @@ public class LogService {
     private final static Integer TIMES = 3 * 60 * 60 * 1000;
 
     // 최근 3시간 많이 사용된 태그 순으로 리스트 저장
-    @Scheduled(cron = "0 0 */1 * * *") // 매 1시간마다 실행
     public void getCountByTagForLast3Hours() {
         long threeHoursAgoTime = System.currentTimeMillis() - TIMES;
         Set<String> tags = redisService.findDataWithKey("*" + KEY_TAG + "*");
 
-        List<String> sortedTags = countTags(tags, threeHoursAgoTime);
+        List<String> sortedTags = countTags(tags);
         redisService.saveSortedTags(sortedTags, KEY_HOT_HASHTAG);
     }
 
     // 태그마다 시간 범위 내의 개수를 세어서 내림차순으로 정렬된 결과 반환
-    private  List<String> countTags(Set<String> tags, long startTime) {
+    private  List<String> countTags(Set<String> tags) {
         Map<String, Long> tagCounts = new HashMap<>();
-        long now = System.currentTimeMillis();
 
         for (String tag : tags) {
-            long count = redisService.countDataWithTime(tag, startTime, now);
+            long count = redisService.countDataWithTime(tag);
             tagCounts.put(tag, count);
         }
         return sortTagsByCount(tagCounts);
