@@ -18,14 +18,12 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
-import static wanted.n.exception.ErrorCode.JSON_EXCEPTION;
-
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import static wanted.n.exception.ErrorCode.INVALID_OTP;
 import static wanted.n.exception.ErrorCode.OTP_EXPIRED;
+import static wanted.n.exception.ErrorCode.JSON_EXCEPTION;
 
 @Slf4j
 @Service
