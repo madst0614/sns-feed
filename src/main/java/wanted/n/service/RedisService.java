@@ -90,4 +90,15 @@ public class RedisService {
         listTemplate.expire(key, ON_FIRE_TIMES, TimeUnit.SECONDS);
     }
 
+    // pattern에 해당하는 key 조회
+    public Set<String> findKeyWithPattern(String keyPattern) {
+        return listTemplate.keys(keyPattern);
+    }
+
+    // key별 개수 반환
+    public long getListSize(String key) {
+        Long size = listTemplate.opsForList().size(key);
+        return (size != null) ? size.intValue() : 0;
+    }
+
 }

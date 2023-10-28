@@ -18,7 +18,6 @@ import wanted.n.service.RedisService;
 public class LogController {
 
     private final LogService logService;
-    private final RedisService redisService;
     private final RedisScheduler redisScheduler;
 
     /**
