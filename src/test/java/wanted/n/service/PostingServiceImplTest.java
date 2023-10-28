@@ -73,8 +73,8 @@ public class PostingServiceImplTest {
     }
 
     @Test
-    @DisplayName("GetPostingDetail 테스트")
-    public void getPostingDetailTest(){
+    @DisplayName("upPostingViewCount 테스트")
+    public void upPostingViewCountTest(){
         //Given
         final PostingDetailRequestDTO postingDetailRequestDTO = PostingDetailRequestDTO.builder()
                 .postingId(1L)
@@ -87,7 +87,7 @@ public class PostingServiceImplTest {
 
 
         //When
-        Posting result = postingServiceImpl.getPostingDetail(postingDetailRequestDTO).getPosting();
+        Posting result = postingServiceImpl.upPostingViewCount(postingDetailRequestDTO).getPosting();
 
         //Then
         assertThat(result.getId()).isEqualTo(expect.getId());

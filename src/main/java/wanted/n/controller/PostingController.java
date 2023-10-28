@@ -53,10 +53,12 @@ public class PostingController {
     }
 
     @GetMapping("/{id}")
-    @ApiOperation(value="Posting 상세 가져오기", notes="요청한 Posting을 상세로 가져옵니다.")
+    @ApiOperation(value="Posting 상세 가져오기", notes="요청시 viewCount가 증가하며 요청한 Posting을 상세로 가져옵니다.")
     public ResponseEntity<PostingDetailResponseDTO>  getPostingDetail(@RequestHeader(AUTHORIZATION) String token, @PathVariable("id") Long id) {
+        PostingDetailRequestDTO postingDetailRequestDTO
+                = PostingDetailRequestDTO.builder().postingId(id).build();
 
-        return new ResponseEntity<>(postingService.getPostingDetail(PostingDetailRequestDTO.builder().postingId(id).build()), HttpStatus.OK);
+        return new ResponseEntity<>(postingService.upPostingViewCount(postingDetailRequestDTO), HttpStatus.OK);
     }
 
     @PatchMapping ("/like/{id}")

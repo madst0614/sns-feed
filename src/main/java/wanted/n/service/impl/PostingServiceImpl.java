@@ -60,7 +60,7 @@ public class PostingServiceImpl implements PostingService {
 
     @Override
     @Transactional
-    public PostingDetailResponseDTO getPostingDetail(PostingDetailRequestDTO postingDetailRequestDTO) {
+    public PostingDetailResponseDTO upPostingViewCount(PostingDetailRequestDTO postingDetailRequestDTO) {
         Posting posting = postingRepository
                 .findById(postingDetailRequestDTO.getPostingId())
                 .orElseThrow(()->new CustomException(ErrorCode.POSTING_NOT_FOUND));
