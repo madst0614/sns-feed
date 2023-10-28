@@ -152,4 +152,15 @@ public class RedisService {
         // 생성된 식별키와 리프레시 토큰을 저장하며, 토큰의 유효 기간은 1440분(24시간)으로 설정합니다.
         saveKeyAndValue(key, refreshToken, 1440);
     }
+
+    /**
+     * 로그아웃 시 사용자 리프레시토큰을 삭제하는 메서드입니다.
+     *
+     * @param email       사용자 이메일
+     */
+    @Transactional
+    public void deleteRefreshToken(String email) {
+        String key = KEY_TOKEN + email;
+        stringRedisTemplate.delete(key);
+    }
 }
