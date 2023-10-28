@@ -13,6 +13,7 @@ import wanted.n.exception.ErrorCode;
 import wanted.n.repository.HashTagRepository;
 import wanted.n.repository.PostingRepository;
 import wanted.n.service.PostingService;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -24,6 +25,7 @@ public class PostingServiceImpl implements PostingService {
     HashTagRepository hashTagRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public Page<Posting> getPostingList(PostingSearchRequestDTO dto, Pageable pageable) {
         // !WARN! hashTagId look-up 작업 필요 !WARN!
         Optional<HashTag> hashTag = hashTagRepository.findByName(dto.getHashTagName());
@@ -45,6 +47,7 @@ public class PostingServiceImpl implements PostingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Posting getPostingDetail(Long postingId) {
         Posting posting = postingRepository.findById(postingId).orElseThrow(()->new CustomException(ErrorCode.POSTING_NOT_FOUND));
 
@@ -60,6 +63,7 @@ public class PostingServiceImpl implements PostingService {
     }
 
     @Override
+    @Transactional
     public void likePosting(Long postingId) {
         // !WARN! 좋아요 시도 구현 필요
         try{
@@ -82,6 +86,7 @@ public class PostingServiceImpl implements PostingService {
     }
 
     @Override
+    @Transactional
     public void sharePosting(Long postingId) {
         // !WARN! 공유 시도 구현 필요
         try{
