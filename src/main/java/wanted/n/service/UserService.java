@@ -92,8 +92,6 @@ public class UserService {
         isPasswordMatch(verificationRequest.getPassword(), user.getPassword());
 
         user.setUserStatus(VERIFIED);
-
-        userRepository.save(user);
     }
 
     /**

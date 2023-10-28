@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.envers.AuditOverride;
 import wanted.n.dto.UserSignUpRequestDTO;
 import wanted.n.enums.UserRole;
@@ -15,6 +16,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@DynamicUpdate
 @AuditOverride(forClass = BaseEntity.class)
 @Entity
 public class User extends BaseEntity {
