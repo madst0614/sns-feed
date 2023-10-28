@@ -26,6 +26,7 @@ public enum ErrorCode {
     OTP_EXPIRED(HttpStatus.BAD_REQUEST, "요청되지 않은 이메일이거나 인증기간이 만료된 인증번호입니다. 인증번호를 다시 요청해주세요."),
     USER_NOT_VERIFIED(HttpStatus.BAD_REQUEST, "인증되지 않은 사용자 입니다. 이메일 인증을 완료해주세요."),
     USER_DELETED(HttpStatus.BAD_REQUEST, "탈퇴한 사용자입니다."),
+    EMAIL_NOT_MATCH(HttpStatus.BAD_REQUEST, "이메일이 일치하지 않습니다."),
 
     // IOException
     JSON_EXCEPTION(HttpStatus.BAD_REQUEST, "Json 직렬화에 실패했습니다."),

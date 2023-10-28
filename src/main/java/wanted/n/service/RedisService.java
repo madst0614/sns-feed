@@ -84,16 +84,16 @@ public class RedisService {
      * OTP(One-Time Password) 값을 받아와 Redis에 저장하는 메서드
      * OTP는 10분 동안 유효하며, 10분이 지나면 자동으로 삭제
      *
-     * @param email 사용자의 이메일 주소
+     * @param account 사용자의 계정
      * @param otp   CompletableFuture로 비동기적으로 얻은 OTP 값
      * @throws RuntimeException CompletableFuture 결과 가져오기 실패 시 발생하는 예외
      */
     @Async
-    public void saveOtp(String email, CompletableFuture<String> otp) {
+    public void saveOtp(String account, CompletableFuture<String> otp) {
         try {
             String valueFuture = otp.get();
-            saveKeyAndValue(KEY_OTP + email, valueFuture, 10);
-            log.info("OTP 저장 완료! OTP 생성자 : " + email);
+            saveKeyAndValue(KEY_OTP + account, valueFuture, 10);
+            log.info("OTP 저장 완료! OTP 생성자 : " + account);
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException("OTP 결과 가져오기 및 임시저장 실패", e);
         }
@@ -116,12 +116,12 @@ public class RedisService {
      * Redis에 저장된 OTP 값과 사용자가 입력한 OTP 값을 비교하는 메서드
      * 일치할 경우에는 OTP 를 삭제
      *
-     * @param email
+     * @param account
      * @param otp
      */
     @Transactional(readOnly = true)
-    public void otpVerification(String email, String otp) {
-        String key = KEY_OTP + email;
+    public void otpVerification(String account, String otp) {
+        String key = KEY_OTP + account;
 
         // Redis에 해당 이메일을 키로 한 OTP 정보가 존재하지 않으면 OTP가 만료되었음을 의미
         if (Boolean.FALSE.equals(stringRedisTemplate.hasKey(key))) {
@@ -139,13 +139,13 @@ public class RedisService {
     /**
      * 사용자 이메일과 리프레시 토큰을 저장하는 메서드입니다.
      *
-     * @param email       사용자 이메일
+     * @param account       사용자 계정
      * @param refreshToken 리프레시 토큰
      */
     @Transactional
-    public void saveRefreshToken(String email, String refreshToken) {
+    public void saveRefreshToken(String account, String refreshToken) {
         // 이메일을 기반으로 한 식별키를 생성합니다.
-        String key = KEY_TOKEN + email;
+        String key = KEY_TOKEN + account;
 
         // 생성된 식별키와 리프레시 토큰을 저장하며, 토큰의 유효 기간은 1440분(24시간)으로 설정합니다.
         saveKeyAndValue(key, refreshToken, 1440);
@@ -154,11 +154,11 @@ public class RedisService {
     /**
      * 로그아웃 시 사용자 리프레시토큰을 삭제하는 메서드입니다.
      *
-     * @param email       사용자 이메일
+     * @param account       사용자 계정
      */
     @Transactional
-    public void deleteRefreshToken(String email) {
-        String key = KEY_TOKEN + email;
+    public void deleteRefreshToken(String account) {
+        String key = KEY_TOKEN + account;
         stringRedisTemplate.delete(key);
     }
 }

@@ -137,11 +137,11 @@ public class JwtTokenProvider {
                 .getBody();
 
         // 클레임에서 이메일과 사용자 역할 가져오기
-        String email = claims.get("email", String.class);
+        String account = claims.get("account", String.class);
         UserRole userRole = UserRole.valueOf(claims.get("userRole", String.class));
 
         // 사용자 정보 로드
-        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(account);
 
         // 사용자 권한과 역할 권한을 병합하여 Authentication 객체 생성
         List<GrantedAuthority> authorities = new ArrayList<>(userDetails.getAuthorities());

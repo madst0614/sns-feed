@@ -82,7 +82,7 @@ public class UserService {
     @Transactional
     public void verifyUser(UserVerificationRequestDTO verificationRequest) {
 
-        User user = userRepository.findByEmail(verificationRequest.getEmail())
+        User user = userRepository.findByAccount(verificationRequest.getAccount())
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
         if (user.getUserStatus().equals(VERIFIED)) {
@@ -95,19 +95,23 @@ public class UserService {
     }
 
     /**
-     * 사용자의 이메일을 확인하고, 이미 인증된 사용자인지 확인.
+     * 사용자의 이메일을 확인하고, 이미 인증된 사용자인지 여부를 확인합니다.
      *
-     * @param email 사용자 이메일
+     * @param userOtpReIssueRequestDTO 사용자 OTP 재 발급 요청 DTO
      */
-    public void checkUser(String email) {
-        User user = userRepository.findByEmail(email)
+    public void checkUser(UserOtpReIssueRequestDTO userOtpReIssueRequestDTO) {
+        User user = userRepository.findByAccount(userOtpReIssueRequestDTO.getAccount())
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
         if (user.getUserStatus().equals(VERIFIED)) {
             throw new CustomException(ALREADY_VERIFIED_USER);
         }
 
+        if (!user.getEmail().equals(userOtpReIssueRequestDTO.getEmail())) {
+            throw new CustomException(EMAIL_NOT_MATCH);
+        }
     }
+
 
     /**
      * 사용자 로그인 처리를 하는 메서드
@@ -120,7 +124,7 @@ public class UserService {
      * @return UserDTO 사용자 정보 및 토큰 정보
      */
     public UserDTO signInUser(UserSignInRequestDTO signInRequest) {
-        User user = userRepository.findByEmail(signInRequest.getEmail())
+        User user = userRepository.findByAccount(signInRequest.getAccount())
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
         if (user.getUserStatus().equals(UNVERIFIED)) {
