@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import wanted.n.dto.UserSignUpRequest;
 import wanted.n.service.EmailService;
+import wanted.n.service.RedisService;
 import wanted.n.service.UserService;
 
 import javax.validation.Valid;
+import java.util.concurrent.CompletableFuture;
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static wanted.n.enums.MailComponents.VERIFICATION_MESSAGE;
@@ -26,6 +28,7 @@ public class UserController {
 
     private final UserService userService;
     private final EmailService emailService;
+    private final RedisService redisService;
 
     @PostMapping("/sign-up")
     @ApiOperation(value = "회원가입", notes = "사용자가 회원정보를 입력하여 회원가입을 진행합니다.")
@@ -35,9 +38,12 @@ public class UserController {
         userService.registerUser(userSignUpRequest);
 
         // 회원가입 인원에게 인증메일 전송
-        emailService.sendEmail(
+        CompletableFuture<String> codeCompletableFuture = emailService.sendEmail(
                 userSignUpRequest.getEmail(), VERIFICATION_SUBJECT, VERIFICATION_MESSAGE
         );
+
+        // 이메일(key) , 인증코드(value) 로 하여 redis 에 저장
+        redisService.saveOtp(userSignUpRequest.getEmail(), codeCompletableFuture);
 
         return ResponseEntity.status(CREATED).build();
     }
