@@ -17,4 +17,13 @@ public class PostingSearchConditionDto {
     // Search
     private SearchType searchType;
     private String searchKeyword;
+
+    public static PostingSearchConditionDto of(Long hashTagId, PostingSearchRequestDto dto){
+        return PostingSearchConditionDto.builder()
+                .hashTagId(hashTagId)
+                .type(dto.getType())
+                .searchType(dto.getSearchType())
+                .searchKeyword(dto.getSearchKeyword())
+                .build();
+    }
 }
