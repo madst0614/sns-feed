@@ -45,6 +45,7 @@ public class JwtTokenProvider {
         Claims claims = Jwts.claims().setSubject(tokenTokenIssuanceDTO.getId().toString());
         claims.put("email", tokenTokenIssuanceDTO.getEmail());
         claims.put("userRole", tokenTokenIssuanceDTO.getUserRole().getRoleName());
+        claims.put("account", tokenTokenIssuanceDTO.getAccount());
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -105,6 +106,19 @@ public class JwtTokenProvider {
                 .parseClaimsJws(token)
                 .getBody()
                 .get("email", String.class);
+    }
+
+    /* 토큰에서 계정 추출 */
+    public String getAccountFromToken(String token) {
+        if (token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+        return Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("account", String.class);
     }
 
     /* 토큰 인증 */
