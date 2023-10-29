@@ -38,7 +38,7 @@ public class LogController {
 
     @ApiOperation(value = "hot hashtag 조회", notes = "최근 3시간 빈번하게 사용된 hashtag 리스트가 반환됩니다.")
     @GetMapping("/hashtags")
-    public ResponseEntity<Object> findTagList() {
+    public ResponseEntity<HashtagsResponseDTO> findTagList() {
         redisScheduler.saveScheduledTag();
         HashtagsResponseDTO response = logService.getSortedTags();
         return ResponseEntity.status(HttpStatus.OK).body(response);
