@@ -34,12 +34,8 @@ public enum ErrorCode {
     // IOException
     JSON_EXCEPTION(HttpStatus.BAD_REQUEST, "Json 직렬화에 실패했습니다."),
 
-    // Hashtag
-    HOT_HASHTAG_OK(HttpStatus.OK, "최근 3시간동안 많이 사용된 hot hashtag 입니다.");
-
     // 토큰 관련 Exception
     REFRESH_CODE_EXPIRED(HttpStatus.UNAUTHORIZED, "리프레시 토큰이 만료되었습니다.");
-
 
     private final HttpStatus status;
     private final String message;
