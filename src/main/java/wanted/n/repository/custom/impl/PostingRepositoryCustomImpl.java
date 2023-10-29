@@ -43,10 +43,14 @@ public class PostingRepositoryCustomImpl implements PostingRepositoryCustom {
                         posting.type, posting.likeCount, posting.shareCount, posting.viewCount, posting.createdAt, posting.updatedAt))
                 .from(postingHashTag)
                 .leftJoin(postingHashTag.posting, posting)
-                .where(postingHashTag.hashTag.id.eq(dto.getHashTagId()),eqType(dto.getType()))
-                .distinct();
+                .where(postingHashTag.hashTag.id.eq(dto.getHashTagId()));
 
-        // (쿼리 1차 가공) searchType != null 일때
+        // (쿼리 추가 1) searchType = ALL 모두 검색 그 외 해당 타입만 검색
+        if(dto.getType()!=PostingType.ALL){
+            query=query.where(posting.type.eq(dto.getType()));
+        }
+
+        // (쿼리 추가2) searchType != null 일때
         if(dto.getSearchType()!= SearchType.NULL){
             switch(dto.getSearchType()){
                 case T : query = query.where(posting.title.contains(dto.getSearchKeyword()));
@@ -59,6 +63,8 @@ public class PostingRepositoryCustomImpl implements PostingRepositoryCustom {
             };
         }
 
+        query=query.distinct();
+
         // Pageable에서 order 조건 추출
         List<OrderSpecifier> order = new ArrayList<>();
         pageable.getSort().stream().forEach(o -> {
@@ -66,12 +72,12 @@ public class PostingRepositoryCustomImpl implements PostingRepositoryCustom {
                     new PathBuilder(Posting.class,"posting").get(o.getProperty())));
         });
 
-        // (쿼리 2차 가공) order 조건과 Pagination
+        // (쿼리 추가3) order 조건과 Pagination
         query = query
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(order.stream().toArray((OrderSpecifier[]::new)))
-                ;
+        ;
 
         return PageableExecutionUtils.getPage(query.fetch(), pageable, query::fetchCount);
     }
