@@ -3,6 +3,7 @@ package wanted.n.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wanted.n.dto.HashtagsResponseDTO;
@@ -40,7 +41,7 @@ public class LogController {
     public ResponseEntity<Object> findTagList() {
         redisScheduler.saveScheduledTag();
         HashtagsResponseDTO response = logService.getSortedTags();
-        return ResponseEntity.status(response.getStatus()).body(response);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 }
