@@ -67,7 +67,6 @@ public class UserVerificationTest {
 
         //then
         assertThat(user.getUserStatus()).isEqualTo(UserStatus.VERIFIED);
-        verify(userRepository).save(user);
     }
 
     @Test

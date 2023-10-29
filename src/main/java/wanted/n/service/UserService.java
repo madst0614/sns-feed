@@ -92,8 +92,6 @@ public class UserService {
         isPasswordMatch(verificationRequest.getPassword(), user.getPassword());
 
         user.setUserStatus(VERIFIED);
-
-        userRepository.save(user);
     }
 
     /**
@@ -134,7 +132,7 @@ public class UserService {
         isPasswordMatch(signInRequest.getPassword(), user.getPassword());
 
         String accessToken = jwtTokenProvider.generateAccessToken(TokenIssuanceDTO.from(user));
-        String refreshToken = jwtTokenProvider.generateRefreshToken(user.getEmail());
+        String refreshToken = jwtTokenProvider.generateRefreshToken(user.getAccount());
 
         return UserDTO.from(user, accessToken, refreshToken);
     }
