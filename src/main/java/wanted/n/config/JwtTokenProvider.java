@@ -40,7 +40,7 @@ public class JwtTokenProvider {
         secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     }
 
-    /* Access Token 생성 메서드 - 클레임에 이메일과 UserRole 삽입 */
+    /* Access Token 생성 메서드 - 클레임에 이메일과 소셜미디어 계정, UserRole 삽입 */
     public String generateAccessToken(TokenIssuanceDTO tokenTokenIssuanceDTO) {
         Claims claims = Jwts.claims().setSubject(tokenTokenIssuanceDTO.getId().toString());
         claims.put("email", tokenTokenIssuanceDTO.getEmail());
@@ -136,12 +136,12 @@ public class JwtTokenProvider {
                 .parseClaimsJws(token)
                 .getBody();
 
-        // 클레임에서 이메일과 사용자 역할 가져오기
-        String email = claims.get("email", String.class);
+        // 클레임에서 계정과 사용자 역할 가져오기
+        String account = claims.get("account", String.class);
         UserRole userRole = UserRole.valueOf(claims.get("userRole", String.class));
 
         // 사용자 정보 로드
-        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(account);
 
         // 사용자 권한과 역할 권한을 병합하여 Authentication 객체 생성
         List<GrantedAuthority> authorities = new ArrayList<>(userDetails.getAuthorities());

@@ -43,8 +43,8 @@ public class UserController {
                 userSignUpRequestDTO.getEmail(), VERIFICATION_SUBJECT, VERIFICATION_MESSAGE
         );
 
-        // 이메일(key) , 인증코드(value) 로 하여 redis 에 저장
-        redisService.saveOtp(userSignUpRequestDTO.getEmail(), codeCompletableFuture);
+        // 계정(account) , 인증코드(value) 로 하여 redis 에 저장
+        redisService.saveOtp(userSignUpRequestDTO.getAccount(), codeCompletableFuture);
 
         return ResponseEntity.status(CREATED).build();
     }
@@ -55,7 +55,7 @@ public class UserController {
             @Valid @RequestBody UserVerificationRequestDTO verificationRequest) {
 
         // 이메일(key)로 검색된 OTP와 입력받은 OTP가 일치하는지 확인
-        redisService.otpVerification(verificationRequest.getEmail(), verificationRequest.getOtp());
+        redisService.otpVerification(verificationRequest.getAccount(), verificationRequest.getOtp());
 
         // 비밀번호도 검증 하고 회원상태를 인증으로 변경
         userService.verifyUser(verificationRequest);
@@ -69,15 +69,15 @@ public class UserController {
             @Valid @RequestBody UserOtpReIssueRequestDTO otpReIssueRequest) {
 
         // 회원가입 한 사용자 이고 이메일 인증 대기 사용자 인지 확인
-        userService.checkUser(otpReIssueRequest.getEmail());
+        userService.checkUser(otpReIssueRequest);
 
         // 회원가입 인원에게 인증메일 재전송
         CompletableFuture<String> codeCompletableFuture = emailService.sendEmail(
                 otpReIssueRequest.getEmail(), VERIFICATION_SUBJECT, VERIFICATION_MESSAGE
         );
 
-        // 이메일(key) , 인증코드(value) 로 하여 redis 에 저장
-        redisService.saveOtp(otpReIssueRequest.getEmail(), codeCompletableFuture);
+        // 계정(key) , 인증코드(value) 로 하여 redis 에 저장
+        redisService.saveOtp(otpReIssueRequest.getAccount(), codeCompletableFuture);
 
         return ResponseEntity.status(CREATED).build();
     }
@@ -91,7 +91,7 @@ public class UserController {
         UserDTO userDto = userService.signInUser(signInRequest);
 
         // 리프레시 토큰을 redis에 저장
-        redisService.saveRefreshToken(userDto.getEmail(), userDto.getRefreshToken());
+        redisService.saveRefreshToken(userDto.getAccount(), userDto.getRefreshToken());
 
         return ResponseEntity.status(OK).body(UserSignInResponseDTO.from(userDto));
     }
@@ -100,9 +100,10 @@ public class UserController {
     @ApiOperation(value = "로그아웃", notes = "사용자의 로그아웃을 진행합니다.")
     public ResponseEntity<Void> signOut(@RequestHeader(AUTHORIZATION) String token) {
 
-        String email = jwtTokenProvider.getEmailFromToken(token);
+        String account = jwtTokenProvider.getAccountFromToken(token);
 
-        redisService.deleteRefreshToken(email);
+        redisService.deleteRefreshToken(account);
+
 
         return ResponseEntity.status(NO_CONTENT).build();
     }

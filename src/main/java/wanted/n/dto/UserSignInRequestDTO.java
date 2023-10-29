@@ -15,9 +15,8 @@ import javax.validation.constraints.Size;
 @Builder
 public class UserSignInRequestDTO {
 
-    @Email(message = "올바른 이메일 형식이 아닙니다.")
-    @NotBlank(message = "이메일을 입력해주세요.")
-    private String email;
+    @NotBlank(message = "sns 계정을 입력해주세요.")
+    private String account;
 
     @Size(min = 10, max = 20, message = "비밀번호는 10자 이상 20자 이하로 입력해 주세요.")
     @NotBlank(message = "비밀번호를 입력해주세요.")
