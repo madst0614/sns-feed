@@ -9,6 +9,9 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
     //GlobalException
     UNDEFINED_EXCEPTION(HttpStatus.BAD_REQUEST, "알 수 없는 오류입니다."),
+    POSTING_NOT_FOUND(HttpStatus.NOT_FOUND, "Posting이 존재하지 않습니다."),
+    INVALID_PAGINATION_OFFSET(HttpStatus.BAD_REQUEST, "page offset에 음수가 들어갈 수 없습니다."),
+    INVALID_PAGINATION_SIZE(HttpStatus.BAD_REQUEST, "page size에 음수가 들어갈 수 없습니다."),
 
     //EmailException
     EMAIL_SENDING_FAILED(HttpStatus.BAD_REQUEST, "이메일 전송에 실패했습니다."),
@@ -26,12 +29,17 @@ public enum ErrorCode {
     OTP_EXPIRED(HttpStatus.BAD_REQUEST, "요청되지 않은 이메일이거나 인증기간이 만료된 인증번호입니다. 인증번호를 다시 요청해주세요."),
     USER_NOT_VERIFIED(HttpStatus.BAD_REQUEST, "인증되지 않은 사용자 입니다. 이메일 인증을 완료해주세요."),
     USER_DELETED(HttpStatus.BAD_REQUEST, "탈퇴한 사용자입니다."),
+    EMAIL_NOT_MATCH(HttpStatus.BAD_REQUEST, "이메일이 일치하지 않습니다."),
 
     // IOException
     JSON_EXCEPTION(HttpStatus.BAD_REQUEST, "Json 직렬화에 실패했습니다."),
 
     // Hashtag
     HOT_HASHTAG_OK(HttpStatus.OK, "최근 3시간동안 많이 사용된 hot hashtag 입니다.");
+
+    // 토큰 관련 Exception
+    REFRESH_CODE_EXPIRED(HttpStatus.UNAUTHORIZED, "리프레시 토큰이 만료되었습니다.");
+
 
     private final HttpStatus status;
     private final String message;

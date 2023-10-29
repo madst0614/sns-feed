@@ -46,7 +46,7 @@ public class UserSignInTest {
         //given
         UserSignInRequestDTO signInRequest =
                 UserSignInRequestDTO.builder()
-                        .email("test@example.com")
+                        .account("테스트계정")
                         .password("password")
                         .build();
 
@@ -54,11 +54,12 @@ public class UserSignInTest {
                 .userStatus(VERIFIED)
                 .password(passwordEncoder.encode(signInRequest.getPassword()))
                 .email("test@example.com")
+                .account("테스트계정")
                 .build();
 
-        when(userRepository.findByEmail(signInRequest.getEmail())).thenReturn(Optional.of(user));
+        when(userRepository.findByAccount(signInRequest.getAccount())).thenReturn(Optional.of(user));
         when(jwtTokenProvider.generateAccessToken(any(TokenIssuanceDTO.class))).thenReturn("accessToken");
-        when(jwtTokenProvider.generateRefreshToken(signInRequest.getEmail())).thenReturn("refreshToken");
+        when(jwtTokenProvider.generateRefreshToken(signInRequest.getAccount())).thenReturn("refreshToken");
         when(passwordEncoder.matches(signInRequest.getPassword(), user.getPassword())).thenReturn(true);
 
         //when
@@ -75,7 +76,7 @@ public class UserSignInTest {
         //given
         UserSignInRequestDTO signInRequest =
                 UserSignInRequestDTO.builder()
-                        .email("test@example.com")
+                        .account("테스트계정")
                         .password("password")
                         .build();
 
@@ -83,9 +84,10 @@ public class UserSignInTest {
                 .userStatus(UNVERIFIED)
                 .password(passwordEncoder.encode(signInRequest.getPassword()))
                 .email("test@example.com")
+                .account("테스트계정")
                 .build();
 
-        when(userRepository.findByEmail(signInRequest.getEmail())).thenReturn(Optional.of(user));
+        when(userRepository.findByAccount(signInRequest.getAccount())).thenReturn(Optional.of(user));
 
         //when&then
         assertThatExceptionOfType(CustomException.class)
@@ -97,10 +99,9 @@ public class UserSignInTest {
     @DisplayName("실패 - 탈퇴한 회원")
     public void signInUser_Fail_DeletedUser() {
         //given
-
         UserSignInRequestDTO signInRequest =
                 UserSignInRequestDTO.builder()
-                        .email("test@example.com")
+                        .account("테스트계정")
                         .password("password")
                         .build();
 
@@ -108,9 +109,10 @@ public class UserSignInTest {
                 .userStatus(DELETED)
                 .password(passwordEncoder.encode(signInRequest.getPassword()))
                 .email("test@example.com")
+                .account("테스트계정")
                 .build();
 
-        when(userRepository.findByEmail(signInRequest.getEmail())).thenReturn(Optional.of(user));
+        when(userRepository.findByAccount(signInRequest.getAccount())).thenReturn(Optional.of(user));
 
         //when&then
         assertThatExceptionOfType(CustomException.class)
@@ -124,17 +126,18 @@ public class UserSignInTest {
         //given
         UserSignInRequestDTO signInRequest =
                 UserSignInRequestDTO.builder()
-                        .email("test@example.com")
+                        .account("테스트계정")
                         .password("password")
                         .build();
 
         User user = User.builder()
                 .userStatus(VERIFIED)
                 .password(passwordEncoder.encode("randompassword"))
+                .account("테스트계정")
                 .email("test@example.com")
                 .build();
 
-        when(userRepository.findByEmail(signInRequest.getEmail())).thenReturn(Optional.of(user));
+        when(userRepository.findByAccount(signInRequest.getAccount())).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(signInRequest.getPassword(), user.getPassword())).thenReturn(false);
 
         //when&then

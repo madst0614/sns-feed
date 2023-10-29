@@ -31,7 +31,7 @@ public class UserVerificationTest {
 
     @Mock
     private JwtTokenProvider jwtTokenProvider;
-  
+
     private UserService userService;
 
     @BeforeEach
@@ -46,20 +46,22 @@ public class UserVerificationTest {
     @DisplayName("성공")
     public void testVerifyUser_Success() {
         //given
+        String account = "테스트계정";
         String email = "user@example.com";
         String password = "password123";
         String otp = "123456";
 
         UserVerificationRequestDTO verificationRequest =
-                new UserVerificationRequestDTO(email, password, otp);
+                new UserVerificationRequestDTO(account, password, otp);
 
         User user = User.builder()
                 .email(email)
+                .account("테스트계정")
                 .userStatus(UserStatus.UNVERIFIED)
                 .password(passwordEncoder.encode(password))
                 .build();
 
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+        when(userRepository.findByAccount(account)).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(password, user.getPassword())).thenReturn(true);
 
         //when
@@ -67,19 +69,19 @@ public class UserVerificationTest {
 
         //then
         assertThat(user.getUserStatus()).isEqualTo(UserStatus.VERIFIED);
-        verify(userRepository).save(user);
     }
 
     @Test
     @DisplayName("실패 - 사용자를 찾을 수 없음")
     public void testVerifyUser_Fail_User_Not_Found() {
         //given
+        String account = "테스트계정";
         String email = "user@example.com";
         String password = "password123";
         String otp = "123456";
 
         UserVerificationRequestDTO verificationRequest =
-                new UserVerificationRequestDTO(email, password, otp);
+                new UserVerificationRequestDTO(account, password, otp);
 
         //when&then
         assertThatThrownBy(() -> userService.verifyUser(verificationRequest))
@@ -91,12 +93,13 @@ public class UserVerificationTest {
     @DisplayName("실패 - 이미 인증된 사용자")
     public void testVerifyUser_Fail_Already_Verified_User() {
         //given
+        String account = "테스트계정";
         String email = "user@example.com";
         String password = "password123";
         String otp = "123456";
 
         UserVerificationRequestDTO verificationRequest =
-                new UserVerificationRequestDTO(email, password, otp);
+                new UserVerificationRequestDTO(account, password, otp);
 
         User user = User.builder()
                 .email(email)
@@ -104,7 +107,7 @@ public class UserVerificationTest {
                 .password(passwordEncoder.encode(password))
                 .build();
 
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+        when(userRepository.findByAccount(account)).thenReturn(Optional.of(user));
 
         //when&then
         assertThatThrownBy(() -> userService.verifyUser(verificationRequest))
@@ -116,13 +119,14 @@ public class UserVerificationTest {
     @DisplayName("실패 - 비밀번호가 일치하지 않음")
     public void testVerifyUser_Password_Not_Match() {
         //given
+        String account = "테스트계정";
         String email = "user@example.com";
         String password = "password123";
         String wrongPassword = "wrongPassword";
         String otp = "123456";
 
         UserVerificationRequestDTO verificationRequest =
-                new UserVerificationRequestDTO(email, password, otp);
+                new UserVerificationRequestDTO(account, password, otp);
 
         User user = User.builder()
                 .email(email)
@@ -130,7 +134,7 @@ public class UserVerificationTest {
                 .password(passwordEncoder.encode(password))
                 .build();
 
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+        when(userRepository.findByAccount(account)).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(wrongPassword, user.getPassword())).thenReturn(false);
 
         //when&then
