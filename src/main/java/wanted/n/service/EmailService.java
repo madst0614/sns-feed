@@ -13,6 +13,7 @@ import wanted.n.exception.CustomException;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+import static wanted.n.enums.MailComponents.NOTIFICATION_MESSAGE;
 import static wanted.n.enums.MailComponents.VERIFICATION_SUBJECT;
 import static wanted.n.exception.ErrorCode.EMAIL_SENDING_FAILED;
 
@@ -83,6 +84,47 @@ public class EmailService {
         mail.setSubject(subject.getContent());
         mail.setText(text.getContent() + verificationCode);
     }
+
+    /**
+     * 이메일을 전송하는 메서드 (조회수 급상승)
+     *
+     * @param to      수신자 이메일 주소
+     * @param subject 이메일 주제
+     * @param text    이메일 내용 (title, view)
+     */
+    public void sendOnFireEmail(String to, MailComponents subject, MailComponents text, String title, long view) {
+
+        SimpleMailMessage mail = new SimpleMailMessage();
+
+        // 단기간 조회수 급상승 메일인 경우, 알림 메일 생성
+        if (subject.equals(NOTIFICATION_MESSAGE)) {
+            createOnFireMail(mail, to, subject, text, title, view);
+        }
+
+        send(mail);
+    }
+
+    /**
+     * 단기간 조회수 급상승 메일을 생성하는 메서드
+     *
+     * @param mail 객체
+     * @param to 수신자
+     * @param subject 이메일 주제
+     * @param text 이메일 내용
+     * @param title 글 제목
+     * @param view 조회수
+     * @return 수정된 결과
+     */
+    private void createOnFireMail(SimpleMailMessage mail,
+                                               String to,
+                                               MailComponents subject,
+                                               MailComponents text, String title, long view) {
+        mail.setTo(to);
+        mail.setSubject(subject.getContent());
+        String mailText = String.format(text.getContent(), title, view);
+        mail.setText(mailText);
+    }
+
 
     /**
      * 이메일을 전송하는 메서드
