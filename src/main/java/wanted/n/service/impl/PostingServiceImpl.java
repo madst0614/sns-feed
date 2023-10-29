@@ -24,8 +24,8 @@ import java.util.Optional;
 @Service
 public class PostingServiceImpl implements PostingService {
 
-    PostingRepository postingRepository;
-    HashTagRepository hashTagRepository;
+    private final PostingRepository postingRepository;
+    private final HashTagRepository hashTagRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -71,7 +71,7 @@ public class PostingServiceImpl implements PostingService {
                                 .title(posting.getTitle())
                                 .content(posting.getContent())
                                 .type(posting.getType())
-                                .viewCount(posting.getViewCount())
+                                .viewCount(posting.getViewCount()+1L)
                                 .likeCount(posting.getLikeCount())
                                 .shareCount(posting.getShareCount())
                                 .build())

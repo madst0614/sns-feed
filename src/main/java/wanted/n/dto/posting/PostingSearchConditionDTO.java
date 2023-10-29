@@ -6,6 +6,8 @@ import wanted.n.enums.PostingType;
 import wanted.n.enums.SearchType;
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class PostingSearchConditionDTO {
     // 1건의 태그

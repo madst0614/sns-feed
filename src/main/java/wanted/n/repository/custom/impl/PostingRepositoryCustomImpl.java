@@ -15,6 +15,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 import wanted.n.domain.Posting;
 import wanted.n.dto.posting.PostingSearchConditionDTO;
 import wanted.n.enums.PostingType;
+import wanted.n.enums.SearchType;
 import wanted.n.repository.custom.PostingRepositoryCustom;
 
 import java.util.ArrayList;
@@ -42,13 +43,16 @@ public class PostingRepositoryCustomImpl implements PostingRepositoryCustom {
                         posting.type, posting.likeCount, posting.shareCount, posting.viewCount, posting.createdAt, posting.updatedAt))
                 .from(postingHashTag)
                 .leftJoin(postingHashTag.posting, posting)
-                .where(postingHashTag.hashTag.id.eq(dto.getHashTagId()),eqType(dto.getType())).distinct();
+                .where(postingHashTag.hashTag.id.eq(dto.getHashTagId()),eqType(dto.getType()))
+                .distinct();
 
         // (쿼리 1차 가공) searchType != null 일때
-        if(dto.getSearchType()!=null){
+        if(dto.getSearchType()!= SearchType.NULL){
             switch(dto.getSearchType()){
                 case T : query = query.where(posting.title.contains(dto.getSearchKeyword()));
+                    break;
                 case C : query = query.where(posting.content.contains(dto.getSearchKeyword()));
+                    break;
 
                 default : query = query.where(posting.title.contains(dto.getSearchKeyword())
                         .or(posting.content.contains(dto.getSearchKeyword())));
