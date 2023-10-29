@@ -78,7 +78,7 @@ public class UserVerificationTest {
         String password = "password123";
         String otp = "123456";
 
-      UserVerificationRequestDTO verificationRequest =
+        UserVerificationRequestDTO verificationRequest =
                 new UserVerificationRequestDTO(email, password, otp);
 
         //when&then

@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import wanted.n.dto.LogDTO;
 import wanted.n.exception.CustomException;
 
-
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
