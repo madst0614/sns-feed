@@ -41,8 +41,7 @@ public class PostingController {
             , @PageableDefault(page=0, size = 10, sort = "createdAt", direction = Sort.Direction.ASC)Pageable pageable
     ) {
         if(hashtagname==null){
-            //!!warn!! getAccountFromToken 구현 필요
-//            hashtagname = jwtTokenProvider.getAccountFromToken(token);
+            hashtagname = jwtTokenProvider.getAccountFromToken(token);
         }
 
         return new ResponseEntity<>(postingService.getPostingList(PostingSearchRequestDTO.builder()
