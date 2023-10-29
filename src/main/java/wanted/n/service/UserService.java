@@ -6,10 +6,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wanted.n.domain.User;
 import wanted.n.dto.UserSignUpRequest;
+import wanted.n.dto.UserVerificationRequest;
 import wanted.n.exception.CustomException;
 import wanted.n.repository.UserRepository;
 import wanted.n.utility.ValidationUtil;
 
+import static wanted.n.enums.UserStatus.VERIFIED;
 import static wanted.n.exception.ErrorCode.*;
 
 /**
@@ -67,5 +69,46 @@ public class UserService {
         if (ValidationUtil.containsTwoOrMoreCharacterTypes(password)) {
             throw new CustomException(INVALID_PASSWORD_AT_LEAST_2_TYPES);
         }
+    }
+
+    /**
+     * 사용자를 확인하고, 이미 인증된 사용자인지 확인한 후,
+     * 입력된 비밀번호와 사용자의 저장된 비밀번호를 비교하여
+     * 사용자를 인증하고 상태를 'VERIFIED'로 설정
+     *
+     * @param verificationRequest 사용자 인증 요청 정보
+     */
+    @Transactional
+    public void verifyUser(UserVerificationRequest verificationRequest) {
+
+        User user = userRepository.findByEmail(verificationRequest.getEmail())
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        if (user.getUserStatus().equals(VERIFIED)) {
+            throw new CustomException(ALREADY_VERIFIED_USER);
+        }
+
+        if (!passwordEncoder.matches(verificationRequest.getPassword(), user.getPassword())) {
+            throw new CustomException(PASSWORD_NOT_MATCH);
+        }
+
+        user.setUserStatus(VERIFIED);
+
+        userRepository.save(user);
+    }
+
+    /**
+     * 사용자의 이메일을 확인하고, 이미 인증된 사용자인지 확인.
+     *
+     * @param email 사용자 이메일
+     */
+    public void checkUser(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        if(user.getUserStatus().equals(VERIFIED)){
+            throw new CustomException(ALREADY_VERIFIED_USER);
+        }
+
     }
 }
