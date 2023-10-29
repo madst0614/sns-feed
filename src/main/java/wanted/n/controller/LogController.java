@@ -14,7 +14,7 @@ import wanted.n.service.RedisService;
 @RestController
 @RequiredArgsConstructor
 @Api(tags = "Log API", description = "hot hashtag 관련 API")
-@RequestMapping("/api/v1/log")
+@RequestMapping("/api/v1/logs")
 public class LogController {
 
     private final LogService logService;

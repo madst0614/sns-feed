@@ -21,7 +21,7 @@ public class LogPostingFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
 
-        if (request.getRequestURI().contains("api/v1/log/postings") && request.getMethod().equals("GET")) {
+        if (request.getRequestURI().contains("/api/v1/logs/postings") && request.getMethod().equals("GET")) {
             String requestUri = urlPathHelper.getRequestUri(request);
             String pathWithinApplication = urlPathHelper.getPathWithinApplication(request);
             String idString = pathWithinApplication.substring(pathWithinApplication.lastIndexOf("/") + 1);

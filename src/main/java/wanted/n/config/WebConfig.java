@@ -18,7 +18,7 @@ public class WebConfig {
     public FilterRegistrationBean<LogTagFilter> customTagFilter() {
         FilterRegistrationBean<LogTagFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(logTagFilter);
-        registrationBean.addUrlPatterns("/api/v1/log/*"); // 임시 log 처리 패턴으로 지정!
+        registrationBean.addUrlPatterns("/api/v1/logs/*"); // 임시 log 처리 패턴으로 지정!
         return registrationBean;
     }
 
@@ -26,7 +26,7 @@ public class WebConfig {
     public FilterRegistrationBean<LogPostingFilter> customPostingFilter() {
         FilterRegistrationBean<LogPostingFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(logPostingFilter);
-        registrationBean.addUrlPatterns("/api/v1/log/*"); // 임시 log 처리 패턴으로 지정!
+        registrationBean.addUrlPatterns("/api/v1/logs/*"); // 임시 log 처리 패턴으로 지정!
         return registrationBean;
     }
 }
