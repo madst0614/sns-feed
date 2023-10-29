@@ -1,15 +1,20 @@
 ### 작업 내용
-- 작업 내용을 간략하게 설명
+- Posting API 추가
 
 ### 변경 사항(추가시엔 추가사항)
-- 변경/추가된 내용을 자세하게 설명
+- Post Controller 추가
+- Post Service 추가
+- Post Repository 추가
 
 ### 특이 사항
-- PR을 리뷰  하면서 주의해야 할 사항 이나 특이한 부분
+- jwtTokenProvider.getAccountFromToken(String token) 구현 필요
+- Service 테스트 코드 작성 필요
+- Controller 테스트 필요
+- Service like, share 기능 PostingType 별로 엔드포인트 호출 과정 필요
 
 ### 테스트
 - [x] 테스트 코드
 - [x] api 테스트
 
 ### 관련 이슈(옵셔널)
-- 이 PR과 관련된 이슈 번호 (해당되지 않는다면 "없음" 입력)
+- 없음
