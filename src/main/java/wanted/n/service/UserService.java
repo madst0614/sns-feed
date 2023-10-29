@@ -11,7 +11,6 @@ import wanted.n.exception.CustomException;
 import wanted.n.repository.UserRepository;
 import wanted.n.utility.ValidationUtil;
 
-
 import static wanted.n.enums.UserStatus.*;
 import static wanted.n.exception.ErrorCode.*;
 
@@ -83,7 +82,7 @@ public class UserService {
     @Transactional
     public void verifyUser(UserVerificationRequestDTO verificationRequest) {
 
-        User user = userRepository.findByEmail(verificationRequest.getEmail())
+        User user = userRepository.findByAccount(verificationRequest.getAccount())
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
         if (user.getUserStatus().equals(VERIFIED)) {
@@ -93,23 +92,65 @@ public class UserService {
         isPasswordMatch(verificationRequest.getPassword(), user.getPassword());
 
         user.setUserStatus(VERIFIED);
-
-        userRepository.save(user);
     }
 
     /**
-     * 사용자의 이메일을 확인하고, 이미 인증된 사용자인지 확인.
+     * 사용자의 이메일을 확인하고, 이미 인증된 사용자인지 여부를 확인합니다.
      *
-     * @param email 사용자 이메일
+     * @param userOtpReIssueRequestDTO 사용자 OTP 재 발급 요청 DTO
      */
-    public void checkUser(String email) {
-        User user = userRepository.findByEmail(email)
+    public void checkUser(UserOtpReIssueRequestDTO userOtpReIssueRequestDTO) {
+        User user = userRepository.findByAccount(userOtpReIssueRequestDTO.getAccount())
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
         if (user.getUserStatus().equals(VERIFIED)) {
             throw new CustomException(ALREADY_VERIFIED_USER);
         }
 
+        if (!user.getEmail().equals(userOtpReIssueRequestDTO.getEmail())) {
+            throw new CustomException(EMAIL_NOT_MATCH);
+        }
+    }
+
+
+    /**
+     * 사용자 로그인 처리를 하는 메서드
+     * 사용자의 이메일을 확인하고, 사용자의 상태를 확인하여
+     * 인증되지 않은 상태 또는 삭제된 상태인 경우 예외를 던집니다.
+     * 그렇지 않으면 비밀번호를 비교하고,
+     * 액세스 토큰 및 리프레시 토큰을 생성하여 사용자 정보를 반환합니다.
+     *
+     * @param signInRequest 사용자 로그인 요청 정보
+     * @return UserDTO 사용자 정보 및 토큰 정보
+     */
+    public UserDTO signInUser(UserSignInRequestDTO signInRequest) {
+        User user = userRepository.findByAccount(signInRequest.getAccount())
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        if (user.getUserStatus().equals(UNVERIFIED)) {
+            throw new CustomException(USER_NOT_VERIFIED);
+        } else if (user.getUserStatus().equals(DELETED)) {
+            throw new CustomException(USER_DELETED);
+        }
+
+        isPasswordMatch(signInRequest.getPassword(), user.getPassword());
+
+        String accessToken = jwtTokenProvider.generateAccessToken(TokenIssuanceDTO.from(user));
+        String refreshToken = jwtTokenProvider.generateRefreshToken(user.getAccount());
+
+        return UserDTO.from(user, accessToken, refreshToken);
+    }
+
+    /**
+     * 비밀번호 일치 여부를 확인하는 메서드
+     *
+     * @param password        입력된 비밀번호
+     * @param encodedPassword 저장된 비밀번호 (해싱된)
+     */
+    private void isPasswordMatch(String password, String encodedPassword) {
+        if (!passwordEncoder.matches(password, encodedPassword)) {
+            throw new CustomException(PASSWORD_NOT_MATCH);
+        }
     }
 
     /**
@@ -135,7 +176,7 @@ public class UserService {
         isPasswordMatch(signInRequest.getPassword(), user.getPassword());
 
         String accessToken = jwtTokenProvider.generateAccessToken(TokenIssuanceDTO.from(user));
-        String refreshToken = jwtTokenProvider.generateRefreshToken(user.getEmail());
+        String refreshToken = jwtTokenProvider.generateRefreshToken(user.getAccount());
 
         return UserDTO.from(user, accessToken, refreshToken);
     }
