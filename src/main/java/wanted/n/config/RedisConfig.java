@@ -7,8 +7,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
-import org.springframework.data.redis.serializer.GenericToStringSerializer;
-import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @EnableRedisRepositories
@@ -27,23 +26,17 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, Object> sortedSetTemplate(RedisConnectionFactory redisConnectionFactory) {
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(redisConnectionFactory);
-        template.setDefaultSerializer(new StringRedisSerializer()); // StringRedisSerializer 사용
-        return template;
-    }
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(connectionFactory);
 
-    @Bean
-    public RedisTemplate<String, Long> listTemplate(RedisConnectionFactory redisConnectionFactory) {
-        RedisTemplate<String, Long> template = new RedisTemplate<>();
-        template.setConnectionFactory(redisConnectionFactory);
-        // Key 직렬화 설정
-        template.setKeySerializer(new StringRedisSerializer());
+        // Key는 문자열로 직렬화
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
 
-        // Value 직렬화 설정
-        RedisSerializer<Long> valueSerializer = new GenericToStringSerializer<>(Long.class);
-        template.setValueSerializer(valueSerializer);
-        return template;
+        // Value는 JSON으로 직렬화
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));
+
+        redisTemplate.afterPropertiesSet();
+        return redisTemplate;
     }
 }

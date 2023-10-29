@@ -30,21 +30,15 @@ import static wanted.n.exception.ErrorCode.JSON_EXCEPTION;
 @RequiredArgsConstructor
 public class RedisService {
 
-    private final RedisTemplate<String, String> stringRedisTemplate;
-    private final RedisTemplate<String, Object> sortedSetTemplate;
-    private final RedisTemplate<String, Long> listTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
+    private final StringRedisTemplate stringRedisTemplate;
     private final ObjectMapper objectMapper;
 
     private final static String KEY_TAG = "tag:"; // 태그를 저장하는 키
     private final static String KEY_HOT_HASHTAG = "tags"; // 핫 해시태그 리스트를 저장하는 키
-    private final static String KEY_POSTING = "posting:"; // 리스트를 저장하는 키
+    private final static Integer TIMES = 3 * 60 * 60 * 1000;
     private final static String KEY_OTP = "otp: ";
     private final static String KEY_TOKEN = "token: ";
-  
-    private final static Integer HOT_TIMES = 3 * 60 * 60 * 1000; // TTL 3시간으로 설정
-    private final static Integer ON_FIRE_TIMES = 12 * 60 * 60 * 1000; // TTL 12시간으로 설정
-
-    // hot hashtag 관련
 
     // 객체를 JSON 형식으로 변환시켜 sorted set 저장
     public void saveLogAsJson(LogDTO log) {
@@ -54,78 +48,38 @@ public class RedisService {
         } catch (JsonProcessingException e) {
             throw new CustomException(JSON_EXCEPTION);
         }
-
-        String key = KEY_TAG + log.getTag();
         long currentTimeMillis = System.currentTimeMillis();
 
-        sortedSetTemplate.opsForZSet().add(key, jsonValue, currentTimeMillis);
-        sortedSetTemplate.expire(key, HOT_TIMES, TimeUnit.SECONDS);
+        redisTemplate.opsForZSet().add(KEY_TAG + log.getTag(), jsonValue, currentTimeMillis);
+
+        // TTL 3시간으로 설정
+        redisTemplate.expire(KEY_TAG + log.getTag(), TIMES, TimeUnit.SECONDS);
     }
 
-    // key로 set 데이터를 조회
-    public Set<String> findSetDataWithKey(String key) {
-        return sortedSetTemplate.keys(key);
+    // key로 데이터를 조회
+    public Set<String> findDataWithKey(String key) {
+        return redisTemplate.keys(key);
     }
 
-    // key에 따라 데이터 개수 반환
-    public long countDataWithTime(String key) {
-        Long count = sortedSetTemplate.opsForZSet().zCard(key);
-        return Objects.requireNonNullElse(count, 0L);
+    // key에 따라 특정 시간 동안 데이터 개수 반환
+    public long countDataWithTime(String key, double startTime, double lastTime) {
+        return Objects.requireNonNullElse(redisTemplate.opsForZSet()
+                .count(key, startTime, lastTime), 0).longValue();
     }
 
     // 태그 리스트를 저장
     public void saveSortedTags(List<String> sortedTags, String key) {
-        sortedSetTemplate.delete(key);
+        redisTemplate.delete(key);
         long currentTimeMillis = System.currentTimeMillis();
 
         List<String> tagNames = sortedTags.stream()
                 .map(tag -> tag.substring(KEY_TAG.length()))
                 .collect(Collectors.toList());
         for (String name : tagNames) {
-            sortedSetTemplate.opsForZSet().add(KEY_HOT_HASHTAG, name, currentTimeMillis);
+            redisTemplate.opsForZSet().add(KEY_HOT_HASHTAG, name, currentTimeMillis);
         }
     }
 
-    // 많이 사용된 순으로 태그 n개 조회
-    public Set<Object> findHotTags(int n) {
-        return sortedSetTemplate.opsForZSet().range(KEY_HOT_HASHTAG, 0, n - 1);
-    }
-
-
-    // on fire 관련
-
-    // List에 postingId log 추가
-    public void saveIdToList(long postingId) {
-        String key = KEY_POSTING + postingId;
-        // id별 시간 저장
-        listTemplate.opsForList().leftPush(key, System.currentTimeMillis());
-        listTemplate.expire(key, ON_FIRE_TIMES, TimeUnit.SECONDS);
-    }
-
-    // pattern에 해당하는 key 조회
-    public Set<String> findKeyWithPattern(String keyPattern) {
-        return listTemplate.keys(keyPattern);
-    }
-
-    // key별 개수 반환
-    public long getListSize(String key) {
-        Long size = listTemplate.opsForList().size(key);
-        return (size != null) ? size.intValue() : 0;
-    }
-
-    /**
-     * Redis에 문자열 형식의 값을 저장하는 메서드.
-     *
-     * @param key        Redis에 저장할 키
-     * @param value      Redis에 저장할 값
-     * @param expireTime 키와 값의 만료 시간(분 단위)
-     */
-    private void saveKeyAndValue(String key, String value, int expireTime) {
-        ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
-        ops.set(key, value);
-        stringRedisTemplate.expire(key, expireTime, TimeUnit.MINUTES);
-    }
- 
     /**
      * OTP(One-Time Password) 값을 받아와 Redis에 저장하는 메서드
      * OTP는 10분 동안 유효하며, 10분이 지나면 자동으로 삭제
@@ -144,6 +98,19 @@ public class RedisService {
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException("OTP 결과 가져오기 및 임시저장 실패", e);
         }
+    }
+
+    /**
+     * Redis에 문자열 형식의 값을 저장하는 메서드.
+     *
+     * @param key        Redis에 저장할 키
+     * @param value      Redis에 저장할 값
+     * @param expireTime 키와 값의 만료 시간(분 단위)
+     */
+    private void saveKeyAndValue(String key, String value, int expireTime) {
+        ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
+        ops.set(key, value);
+        stringRedisTemplate.expire(key, expireTime, TimeUnit.MINUTES);
     }
 
     /**
