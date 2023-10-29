@@ -13,7 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import wanted.n.dto.TokenIssuanceDto;
+import wanted.n.dto.TokenIssuanceDTO;
 import wanted.n.enums.UserRole;
 import wanted.n.service.UserDetailsServiceImpl;
 
@@ -40,11 +40,12 @@ public class JwtTokenProvider {
         secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     }
 
-    /* Access Token 생성 메서드 - 클레임에 이메일과 UserRole 삽입 */
-    public String generateAccessToken(TokenIssuanceDto tokenTokenIssuanceDto) {
-        Claims claims = Jwts.claims().setSubject(tokenTokenIssuanceDto.getId().toString());
-        claims.put("email", tokenTokenIssuanceDto.getEmail());
-        claims.put("userRole", tokenTokenIssuanceDto.getUserRole().getRoleName());
+    /* Access Token 생성 메서드 - 클레임에 이메일과 소셜미디어 계정, UserRole 삽입 */
+    public String generateAccessToken(TokenIssuanceDTO tokenTokenIssuanceDTO) {
+        Claims claims = Jwts.claims().setSubject(tokenTokenIssuanceDTO.getId().toString());
+        claims.put("email", tokenTokenIssuanceDTO.getEmail());
+        claims.put("userRole", tokenTokenIssuanceDTO.getUserRole().getRoleName());
+        claims.put("account", tokenTokenIssuanceDTO.getAccount());
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -57,9 +58,9 @@ public class JwtTokenProvider {
     }
 
     /* Refresh Token 생성 메서드 - 클레임에 이메일 삽입 (추후 엑세스 토큰 재발급 시 사용예정)*/
-    public String generateRefreshToken(String email) {
+    public String generateRefreshToken(String account) {
         return Jwts.builder()
-                .claim("email", email)
+                .claim("account", account)
                 .setIssuer(issuer)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 // 유효 기간 24시간
@@ -107,6 +108,19 @@ public class JwtTokenProvider {
                 .get("email", String.class);
     }
 
+    /* 토큰에서 계정 추출 */
+    public String getAccountFromToken(String token) {
+        if (token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+        return Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("account", String.class);
+    }
+
     /* 토큰 인증 */
     public Authentication getAuthentication(String token) {
 
@@ -122,12 +136,12 @@ public class JwtTokenProvider {
                 .parseClaimsJws(token)
                 .getBody();
 
-        // 클레임에서 이메일과 사용자 역할 가져오기
-        String email = claims.get("email", String.class);
+        // 클레임에서 계정과 사용자 역할 가져오기
+        String account = claims.get("account", String.class);
         UserRole userRole = UserRole.valueOf(claims.get("userRole", String.class));
 
         // 사용자 정보 로드
-        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(account);
 
         // 사용자 권한과 역할 권한을 병합하여 Authentication 객체 생성
         List<GrantedAuthority> authorities = new ArrayList<>(userDetails.getAuthorities());
