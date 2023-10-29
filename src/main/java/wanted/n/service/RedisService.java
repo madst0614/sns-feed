@@ -171,6 +171,17 @@ public class RedisService {
     }
 
     /**
+     * 로그아웃 시 사용자 리프레시토큰을 삭제하는 메서드입니다.
+     *
+     * @param email       사용자 이메일
+     */
+    @Transactional
+    public void deleteRefreshToken(String email) {
+        String key = KEY_TOKEN + email;
+        stringRedisTemplate.delete(key);
+    }
+
+    /**
      * Redis에 저장된 OTP 값과 사용자가 입력한 OTP 값을 비교하는 메서드
      * 일치할 경우에는 OTP 를 삭제
      *

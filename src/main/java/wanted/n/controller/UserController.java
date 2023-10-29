@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import wanted.n.config.JwtTokenProvider;
 import wanted.n.dto.*;
 import wanted.n.service.EmailService;
 import wanted.n.service.RedisService;
@@ -13,6 +14,7 @@ import wanted.n.service.UserService;
 import javax.validation.Valid;
 import java.util.concurrent.CompletableFuture;
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.*;
 import static wanted.n.enums.MailComponents.VERIFICATION_MESSAGE;
 import static wanted.n.enums.MailComponents.VERIFICATION_SUBJECT;
@@ -26,6 +28,7 @@ public class UserController {
     private final UserService userService;
     private final EmailService emailService;
     private final RedisService redisService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/sign-up")
     @ApiOperation(value = "회원가입", notes = "사용자가 회원정보를 입력하여 회원가입을 진행합니다.")
@@ -91,5 +94,16 @@ public class UserController {
         redisService.saveRefreshToken(userDto.getEmail(), userDto.getRefreshToken());
 
         return ResponseEntity.status(OK).body(UserSignInResponseDTO.from(userDto));
+    }
+
+    @PostMapping("/sign-out")
+    @ApiOperation(value = "로그아웃", notes = "사용자의 로그아웃을 진행합니다.")
+    public ResponseEntity<Void> signOut(@RequestHeader(AUTHORIZATION) String token) {
+
+        String email = jwtTokenProvider.getEmailFromToken(token);
+
+        redisService.deleteRefreshToken(email);
+
+        return ResponseEntity.status(NO_CONTENT).build();
     }
 }
