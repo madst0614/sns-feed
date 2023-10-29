@@ -1,16 +1,14 @@
 package wanted.n.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
  * 임시 posting 데이터
  */
 @Getter
-@Setter
-@AllArgsConstructor
+@NoArgsConstructor // 직렬화
 public class LogPostingDTO {
     private List<Long> tag;
 }

@@ -8,7 +8,6 @@ import lombok.Setter;
  * OnFire 후보 데이터
  */
 @Getter
-@Setter
 @AllArgsConstructor
 public class LogOnFireDTO {
     private long postingId;

@@ -5,11 +5,10 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import wanted.n.dto.HashtagsResponse;
+import wanted.n.dto.HashtagsResponseDTO;
 import wanted.n.dto.LogPostingDTO;
 import wanted.n.scheduler.RedisScheduler;
 import wanted.n.service.LogService;
-import wanted.n.service.RedisService;
 
 @RestController
 @RequiredArgsConstructor
@@ -40,7 +39,7 @@ public class LogController {
     @GetMapping("/hashtags")
     public ResponseEntity<Object> findTagList() {
         redisScheduler.saveScheduledTag();
-        HashtagsResponse response = logService.getSortedTags();
+        HashtagsResponseDTO response = logService.getSortedTags();
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 

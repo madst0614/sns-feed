@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import wanted.n.dto.HashtagsResponse;
+import wanted.n.dto.HashtagsResponseDTO;
 import wanted.n.dto.LogOnFireDTO;
 import wanted.n.exception.ErrorCode;
 
@@ -31,9 +31,9 @@ public class LogService {
     /** 최근 3시간 동안 많이 사용된 해시태그 리스트를 조회
      * 조건 1) 최대 5개 = MAX_TAG
      */
-    public HashtagsResponse getSortedTags() {
+    public HashtagsResponseDTO getSortedTags() {
         List<Object> hashtags = new ArrayList<>(redisService.findHotTags(MAX_TAG));
-        return new HashtagsResponse(ErrorCode.HOT_HASHTAG_OK, hashtags);
+        return new HashtagsResponseDTO(ErrorCode.HOT_HASHTAG_OK, hashtags);
     }
 
     // 최근 3시간 많이 사용된 태그 순으로 리스트 저장
