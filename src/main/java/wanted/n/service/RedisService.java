@@ -94,6 +94,7 @@ public class RedisService {
             String valueFuture = otp.get();
             saveKeyAndValue(KEY_OTP + account, valueFuture, 10);
             log.info("OTP 저장 완료! OTP 생성자 : " + account);
+
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException("OTP 결과 가져오기 및 임시저장 실패", e);
         }
