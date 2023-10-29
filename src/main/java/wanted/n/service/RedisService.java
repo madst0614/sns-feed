@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import wanted.n.dto.LogDTO;
 import wanted.n.exception.CustomException;
 
-
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -32,12 +31,14 @@ import static wanted.n.exception.ErrorCode.JSON_EXCEPTION;
 public class RedisService {
 
     private final RedisTemplate<String, Object> redisTemplate;
+    private final StringRedisTemplate stringRedisTemplate;
     private final ObjectMapper objectMapper;
 
     private final static String KEY_TAG = "tag:"; // 태그를 저장하는 키
     private final static String KEY_HOT_HASHTAG = "tags"; // 핫 해시태그 리스트를 저장하는 키
     private final static Integer TIMES = 3 * 60 * 60 * 1000;
     private final static String KEY_OTP = "otp: ";
+    private final static String KEY_TOKEN = "token: ";
 
     // 객체를 JSON 형식으로 변환시켜 sorted set 저장
     public void saveLogAsJson(LogDTO log) {
@@ -125,9 +126,48 @@ public class RedisService {
      * @param expireTime 키와 값의 만료 시간(분 단위)
      */
     private void saveKeyAndValue(String key, String value, int expireTime) {
-        ValueOperations<String, String> ops = redisTemplate.opsForValue();
+        ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
         ops.set(key, value);
-        redisTemplate.expire(key, expireTime, TimeUnit.MINUTES);
+        stringRedisTemplate.expire(key, expireTime, TimeUnit.MINUTES);
+    }
+
+    /**
+     * Redis에 저장된 OTP 값과 사용자가 입력한 OTP 값을 비교하는 메서드
+     * 일치할 경우에는 OTP 를 삭제
+     *
+     * @param email
+     * @param otp
+     */
+    @Transactional(readOnly = true)
+    public void otpVerification(String email, String otp) {
+        String key = KEY_OTP + email;
+
+        // Redis에 해당 이메일을 키로 한 OTP 정보가 존재하지 않으면 OTP가 만료되었음을 의미
+        if (Boolean.FALSE.equals(stringRedisTemplate.hasKey(key))) {
+            throw new CustomException(OTP_EXPIRED);
+        }
+
+        String storedOtp = stringRedisTemplate.opsForValue().get(key);
+
+        // 입력한 OTP가 저장된 OTP와 일치하지 않을 경우 예외 발생
+        if (!otp.equals(storedOtp)) {
+            throw new CustomException(INVALID_OTP);
+        }
+    }
+
+    /**
+     * 사용자 이메일과 리프레시 토큰을 저장하는 메서드입니다.
+     *
+     * @param email       사용자 이메일
+     * @param refreshToken 리프레시 토큰
+     */
+    @Transactional
+    public void saveRefreshToken(String email, String refreshToken) {
+        // 이메일을 기반으로 한 식별키를 생성합니다.
+        String key = KEY_TOKEN + email;
+
+        // 생성된 식별키와 리프레시 토큰을 저장하며, 토큰의 유효 기간은 1440분(24시간)으로 설정합니다.
+        saveKeyAndValue(key, refreshToken, 1440);
     }
 
     /**
