@@ -31,7 +31,7 @@ import static wanted.n.exception.ErrorCode.JSON_EXCEPTION;
 @RequiredArgsConstructor
 public class RedisService {
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
     private final RedisTemplate<String, Object> sortedSetTemplate;
     private final RedisTemplate<String, Long> listTemplate;
     private final ObjectMapper objectMapper;
@@ -113,6 +113,19 @@ public class RedisService {
     }
 
     /**
+     * Redis에 문자열 형식의 값을 저장하는 메서드.
+     *
+     * @param key        Redis에 저장할 키
+     * @param value      Redis에 저장할 값
+     * @param expireTime 키와 값의 만료 시간(분 단위)
+     */
+    private void saveKeyAndValue(String key, String value, int expireTime) {
+        ValueOperations<String, String> ops = redisTemplate.opsForValue();
+        ops.set(key, value);
+        redisTemplate.expire(key, expireTime, TimeUnit.MINUTES);
+    }
+
+    /**
      * OTP(One-Time Password) 값을 받아와 Redis에 저장하는 메서드
      * OTP는 10분 동안 유효하며, 10분이 지나면 자동으로 삭제
      *
@@ -139,6 +152,23 @@ public class RedisService {
     public void saveObjectAsJson(LogDTO log) throws JsonProcessingException {
         String jsonValue = objectMapper.writeValueAsString(log);
         redisTemplate.opsForZSet().add(KEY_TAG + log.getTag(), jsonValue, log.getCreatedAt());
+    }
+
+    @Transactional(readOnly = true)
+    public void otpVerification(String email, String otp) {
+        String key = KEY_OTP + email;
+
+        // Redis에 해당 이메일을 키로 한 OTP 정보가 존재하지 않으면 OTP가 만료되었음을 의미
+        if (Boolean.FALSE.equals(redisTemplate.hasKey(key))) {
+            throw new CustomException(OTP_EXPIRED);
+        }
+
+        String storedOtp = redisTemplate.opsForValue().get(key);
+
+        // 입력한 OTP가 저장된 OTP와 일치하지 않을 경우 예외 발생
+        if (!otp.equals(storedOtp)) {
+            throw new CustomException(INVALID_OTP);
+        }
     }
 
 }
