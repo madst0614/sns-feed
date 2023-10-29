@@ -29,8 +29,7 @@ public class LogService {
 
 
     /** 최근 3시간 동안 많이 사용된 해시태그 리스트를 조회
-     * 조건 1) 3시간 동안 전체의 10% 보다 많은 경우
-     * 조건 2) 최대 5개 = MAX_TAG
+     * 조건 1) 최대 5개 = MAX_TAG
      */
     public HashtagsResponse getSortedTags() {
         List<Object> hashtags = new ArrayList<>(redisService.findHotTags(MAX_TAG));
@@ -67,7 +66,7 @@ public class LogService {
 
     /** on Fire 조건 확인
      * 조건 1) 12시간 동안 100번 이상 조회한 경우
-     * 조건 2) 12시간 동안 전체의 30% 보다 많은 경우 (생성된지 3시간 이상인 posting 조건이 포함)
+     * 조건 2) 12시간 동안 전체의 50% 보다 많은 경우 (생성된지 3시간 이상인 posting 조건이 포함)
      * 조건 3) preView 높은 순으로 최대 10개 = MAX_POSTING
      */
 
