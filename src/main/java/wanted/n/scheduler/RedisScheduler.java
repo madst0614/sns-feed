@@ -18,7 +18,6 @@ public class RedisScheduler {
     private static final Logger log = LoggerFactory.getLogger(LogService.class);
     private final LogService logService;
 
-    @Scheduled(cron = "0 */1 * * * *")
     @Scheduled(cron = "0 0 */1 * * *") // 매 1시간마다 실행
     public void saveScheduledTag() {
         logService.getCountByTagForLast3Hours();
