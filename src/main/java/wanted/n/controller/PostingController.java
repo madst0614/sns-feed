@@ -36,12 +36,13 @@ public class PostingController {
     public ResponseEntity<PostingSearchResponseDTO>  getPostingListSearchByCondition(
             @RequestHeader(AUTHORIZATION) String token,
             @RequestParam(value="hashtagname") String hashtagname
-            , @RequestParam("type")PostingType type
-            , @RequestParam("searchtype")SearchType searchType, @RequestParam("keyword") String searchKeyword
+            , @Valid @RequestParam("type")PostingType type
+            , @Valid @RequestParam("searchtype")SearchType searchType, @RequestParam("keyword") String searchKeyword
             , @PageableDefault(page=0, size = 10, sort = "createdAt", direction = Sort.Direction.ASC)Pageable pageable
     ) {
         if(hashtagname==null){
-            hashtagname = jwtTokenProvider.getAccountFromToken(token);
+            //!!warn!! getAccountFromToken 구현 필요
+//            hashtagname = jwtTokenProvider.getAccountFromToken(token);
         }
 
         return new ResponseEntity<>(postingService.getPostingList(PostingSearchRequestDTO.builder()
