@@ -152,44 +152,4 @@ public class UserService {
             throw new CustomException(PASSWORD_NOT_MATCH);
         }
     }
-
-    /**
-     * 사용자 로그인 처리를 하는 메서드
-     * 사용자의 이메일을 확인하고, 사용자의 상태를 확인하여
-     * 인증되지 않은 상태 또는 삭제된 상태인 경우 예외를 던집니다.
-     * 그렇지 않으면 비밀번호를 비교하고,
-     * 액세스 토큰 및 리프레시 토큰을 생성하여 사용자 정보를 반환합니다.
-     *
-     * @param signInRequest 사용자 로그인 요청 정보
-     * @return UserDTO 사용자 정보 및 토큰 정보
-     */
-    public UserDTO signInUser(UserSignInRequestDTO signInRequest) {
-        User user = userRepository.findByEmail(signInRequest.getEmail())
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-
-        if (user.getUserStatus().equals(UNVERIFIED)) {
-            throw new CustomException(USER_NOT_VERIFIED);
-        } else if (user.getUserStatus().equals(DELETED)) {
-            throw new CustomException(USER_DELETED);
-        }
-
-        isPasswordMatch(signInRequest.getPassword(), user.getPassword());
-
-        String accessToken = jwtTokenProvider.generateAccessToken(TokenIssuanceDTO.from(user));
-        String refreshToken = jwtTokenProvider.generateRefreshToken(user.getAccount());
-
-        return UserDTO.from(user, accessToken, refreshToken);
-    }
-
-    /**
-     * 비밀번호 일치 여부를 확인하는 메서드
-     *
-     * @param password        입력된 비밀번호
-     * @param encodedPassword 저장된 비밀번호 (해싱된)
-     */
-    private void isPasswordMatch(String password, String encodedPassword) {
-        if (!passwordEncoder.matches(password, encodedPassword)) {
-            throw new CustomException(PASSWORD_NOT_MATCH);
-        }
-    }
 }
