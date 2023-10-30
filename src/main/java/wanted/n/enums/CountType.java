@@ -1,5 +1,5 @@
 package wanted.n.enums;
 
 public enum CountType {
-    COUNT, VIEWCOUNT, LIKECOUNT, SHARECOUNT
+    POSTINGCOUNT, VIEWCOUNT, LIKECOUNT, SHARECOUNT
 }
