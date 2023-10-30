@@ -22,6 +22,12 @@ public enum MailComponents {
                     "글 제목: [%s] \n " +
                     "조회수: [%s] \n" +
                     "사용자들의 관심을 끈 글을 작성해주셔서 감사합니다. "
+    ),
+
+    PASSWORD_RESET_SUBJECT("SNS-FEED 임시비밀번호"),
+
+    PASSWORD_RESET_MESSAGE(
+            "아래 임시비밀번호를 사용하여 로그인 하세요 \n 임시비밀번호 : %s "
     );
 
     private final String content;

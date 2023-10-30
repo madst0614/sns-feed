@@ -55,4 +55,8 @@ public class User extends BaseEntity {
     public void setUserStatus(UserStatus userStatus) {
         this.userStatus = userStatus;
     }
+
+    public void setPassword(String encodePassword) {
+        this.password = encodePassword;
+    }
 }
