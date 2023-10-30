@@ -152,19 +152,4 @@ public class UserService {
             throw new CustomException(PASSWORD_NOT_MATCH);
         }
     }
-
-    /**
-     * 사용자의 이메일을 확인하고, 이미 인증된 사용자인지 확인.
-     *
-     * @param email 사용자 이메일
-     */
-    public void checkUser(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-
-        if (user.getUserStatus().equals(VERIFIED)) {
-            throw new CustomException(ALREADY_VERIFIED_USER);
-        }
-
-    }
 }
