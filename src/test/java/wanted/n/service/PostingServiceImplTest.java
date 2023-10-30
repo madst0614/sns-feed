@@ -43,8 +43,8 @@ public class PostingServiceImplTest {
     private PostingServiceImpl postingServiceImpl;
     @BeforeEach
     public void setup(){
-        MockitoAnnotations.openMocks(this);
         postingServiceImpl = new PostingServiceImpl(postingRepository, hashTagRepository);
+        MockitoAnnotations.openMocks(this);
     }
     @Test
     @DisplayName("GetPostingList 테스트")
