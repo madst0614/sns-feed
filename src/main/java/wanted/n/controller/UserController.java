@@ -139,4 +139,16 @@ public class UserController {
 
         return ResponseEntity.status(NO_CONTENT).build();
     }
+    @PatchMapping("/password/modify")
+    @ApiOperation(value = "비밀번호 변경", notes = "사용자의 비밀번호를 변경합니다.")
+    public ResponseEntity<Void> modifyPassword(
+            @RequestHeader(AUTHORIZATION) String token,
+            @Valid @RequestBody UserPasswordModifyRequestDTO passwordModifyRequest) {
+
+        Long userId = jwtTokenProvider.getIdFromToken(token);
+
+        userService.modifyPassword(userId, passwordModifyRequest);
+
+        return ResponseEntity.status(NO_CONTENT).build();
+    }
 }

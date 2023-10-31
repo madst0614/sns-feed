@@ -1,19 +1,15 @@
 package wanted.n.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wanted.n.dto.LogDTO;
 import wanted.n.exception.CustomException;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -24,72 +20,77 @@ import static wanted.n.exception.ErrorCode.*;
 @RequiredArgsConstructor
 public class RedisService {
 
-    private final RedisTemplate<String, String> stringRedisTemplate;
-    private final RedisTemplate<String, Object> sortedSetTemplate;
     private final RedisTemplate<String, Long> listTemplate;
-    private final ObjectMapper objectMapper;
+    private final RedisTemplate<String, String> listStringTemplate;
+    private final StringRedisTemplate stringRedisTemplate;
 
     private final static String KEY_TAG = "tag:"; // 태그를 저장하는 키
     private final static String KEY_HOT_HASHTAG = "tags"; // 핫 해시태그 리스트를 저장하는 키
     private final static String KEY_POSTING = "posting:"; // 리스트를 저장하는 키
+    private final static Integer MAX_HOT_HASHTAG = 5;
+
+
     private final static String KEY_OTP = "otp: ";
     private final static String KEY_TOKEN = "token: ";
+
     private final static Integer HOT_TIMES = 3 * 60 * 60 * 1000; // TTL 3시간으로 설정
     private final static Integer ON_FIRE_TIMES = 12 * 60 * 60 * 1000; // TTL 12시간으로 설정
 
+
     // hot hashtag 관련
 
-    // 객체를 JSON 형식으로 변환시켜 sorted set 저장
-    public void saveLogAsJson(LogDTO log) {
-        String jsonValue;
-        try {
-            jsonValue = objectMapper.writeValueAsString(log);
-        } catch (JsonProcessingException e) {
-            throw new CustomException(JSON_EXCEPTION);
-        }
-
-        String key = KEY_TAG + log.getTag();
-        long currentTimeMillis = System.currentTimeMillis();
-
-        sortedSetTemplate.opsForZSet().add(key, jsonValue, currentTimeMillis);
-        sortedSetTemplate.expire(key, HOT_TIMES, TimeUnit.SECONDS);
-    }
-
-    // key로 set 데이터를 조회
-    public Set<String> findSetDataWithKey(String key) {
-        return sortedSetTemplate.keys(key);
-    }
-
-    // key에 따라 데이터 개수 반환
-    public long countDataWithTime(String key) {
-        Long count = sortedSetTemplate.opsForZSet().zCard(key);
-        return Objects.requireNonNullElse(count, 0L);
+    // List<Long> tag 저장
+    public void saveTag(String tag) {
+        String key = KEY_TAG + tag;
+        listTemplate.opsForList().leftPush(key, System.currentTimeMillis());
+        listTemplate.expire(key, HOT_TIMES, TimeUnit.SECONDS);
     }
 
     // 태그 리스트를 저장
-    public void saveSortedTags(List<String> sortedTags, String key) {
-        sortedSetTemplate.delete(key);
-        long currentTimeMillis = System.currentTimeMillis();
+    public void saveSortedTags() {
+        List<String> hotHashtags = findMapDataWithKey();
 
-        List<String> tagNames = sortedTags.stream()
-                .map(tag -> tag.substring(KEY_TAG.length()))
-                .collect(Collectors.toList());
-        for (String name : tagNames) {
-            sortedSetTemplate.opsForZSet().add(KEY_HOT_HASHTAG, name, currentTimeMillis);
+        listStringTemplate.delete(KEY_HOT_HASHTAG); // 기존 데이터 삭제
+
+        for (String tag : hotHashtags) {
+            // Long tagId = Long.parseLong(tag.substring(KEY_TAG.length())); // id 경우 : 각 태그마다 tagName
+            listStringTemplate.opsForList().leftPush(KEY_HOT_HASHTAG, tag.substring(KEY_TAG.length()));
         }
     }
 
-    // 많이 사용된 순으로 태그 n개 조회
-    public Set<Object> findHotTags(int n) {
-        return sortedSetTemplate.opsForZSet().range(KEY_HOT_HASHTAG, 0, n - 1);
+    // key로 Map<String, Long> 사용된 데이터 조회
+    private List<String> findMapDataWithKey() {
+        Set<String> keys = listTemplate.keys(KEY_TAG + "*"); // tag 관련 key 조회
+
+        Map<String, Long> tagCounts = new HashMap<>();
+        for (String key : Objects.requireNonNull(keys)) { // 각 태그마다 개수 확인
+            tagCounts.put(key, Objects.requireNonNullElse(
+                    listTemplate.opsForList().size(key), 0L));
+        }
+
+        return getTopHashTags(tagCounts);
     }
+
+    private List<String> getTopHashTags(Map<String, Long> tagCounts) {
+        return tagCounts.entrySet().stream()
+                .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+                .limit(MAX_HOT_HASHTAG)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+    }
+
+    // 많이 사용된 순으로 태그명 조회
+    public List<String> findHotTags() {
+        return listStringTemplate.opsForList().range(KEY_HOT_HASHTAG, 0, -1);
+    }
+
 
 
     // on fire 관련
 
     // List에 postingId log 추가
-    public void saveIdToList(long postingId) {
-        String key = KEY_POSTING + postingId;
+    public void savePostingToList(Long tag) {
+        String key = KEY_POSTING + tag;
         // id별 시간 저장
         listTemplate.opsForList().leftPush(key, System.currentTimeMillis());
         listTemplate.expire(key, ON_FIRE_TIMES, TimeUnit.SECONDS);
@@ -107,19 +108,6 @@ public class RedisService {
     }
 
     /**
-     * Redis에 문자열 형식의 값을 저장하는 메서드.
-     *
-     * @param key        Redis에 저장할 키
-     * @param value      Redis에 저장할 값
-     * @param expireTime 키와 값의 만료 시간(분 단위)
-     */
-    private void saveKeyAndValue(String key, String value, int expireTime) {
-        ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
-        ops.set(key, value);
-        stringRedisTemplate.expire(key, expireTime, TimeUnit.MINUTES);
-    }
-
-    /**
      * OTP(One-Time Password) 값을 받아와 Redis에 저장하는 메서드
      * OTP는 10분 동안 유효하며, 10분이 지나면 자동으로 삭제
      *
@@ -131,6 +119,19 @@ public class RedisService {
     public void saveOtp(String account, String otp) {
         saveKeyAndValue(KEY_OTP + account, otp, 10);
         log.info("OTP 저장 완료! OTP 생성자 : " + account);
+    }
+
+    /**
+     * Redis에 문자열 형식의 값을 저장하는 메서드.
+     *
+     * @param key        Redis에 저장할 키
+     * @param value      Redis에 저장할 값
+     * @param expireTime 키와 값의 만료 시간(분 단위)
+     */
+    private void saveKeyAndValue(String key, String value, int expireTime) {
+        ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
+        ops.set(key, value);
+        stringRedisTemplate.expire(key, expireTime, TimeUnit.MINUTES);
     }
 
     /**
