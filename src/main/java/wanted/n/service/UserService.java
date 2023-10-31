@@ -202,5 +202,4 @@ public class UserService {
         // 비밀번호 수정
         user.setPassword(passwordEncoder.encode(passwordModifyRequest.getNewPassword()));
     }
-
 }
