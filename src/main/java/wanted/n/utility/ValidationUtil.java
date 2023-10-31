@@ -4,6 +4,7 @@ import lombok.experimental.UtilityClass;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.IntStream;
 
 /**
@@ -80,6 +81,19 @@ public class ValidationUtil {
     /* 비밀번호 조건: 통상적으로 자주 사용되는 비밀번호는 사용할 수 없습니다. */
     public static boolean isUsualPassword(String password) {
         return USUAL_PASSWORD_LIST.contains(password);
+    }
+
+    /**
+     * 인증 코드/임시 비밀번호 를 생성하는 메서드
+     *
+     * @param length 생성할 인증 코드의 길이
+     * @return 생성된 인증 코드 / 바밀번호
+     */
+    public static String createUUID(int length) {
+        return UUID.randomUUID()
+                .toString()
+                .replace("-", "")
+                .substring(0, length);
     }
 }
 
