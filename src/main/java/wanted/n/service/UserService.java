@@ -152,4 +152,54 @@ public class UserService {
             throw new CustomException(PASSWORD_NOT_MATCH);
         }
     }
+
+    /**
+     * 사용자 비밀번호 재설정 메서드.
+     *
+     * @param passwordResetRequest 비밀번호 재설정 요청 DTO.
+     * @param temporaryPassword    임시 비밀번호.
+     * @throws CustomException 사용자를 찾을 수 없거나 이메일이 일치하지 않을 경우 예외 발생.
+     */
+    @Transactional
+    public void resetPassword(UserPasswordResetRequestDTO passwordResetRequest, String temporaryPassword) {
+        // 사용자 계정으로 사용자 검색
+        User user = userRepository.findByAccount(passwordResetRequest.getAccount())
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        // 이메일 일치 여부 확인
+        if (!user.getEmail().equals(passwordResetRequest.getEmail())) {
+            throw new CustomException(EMAIL_NOT_MATCH);
+        }
+
+        // 사용자 계정상태 확인
+        if (!user.getUserStatus().equals(VERIFIED)) {
+            throw new CustomException(USER_NOT_ACTIVE);
+        }
+
+        // 비밀번호 재설정
+        user.setPassword(passwordEncoder.encode(temporaryPassword));
+    }
+
+    /**
+     * 사용자 비밀번호 수정 메서드.
+     *
+     * @param userId                사용자 ID.
+     * @param passwordModifyRequest 비밀번호 수정 요청 DTO.
+     * @throws CustomException 사용자를 찾을 수 없거나 기존 비밀번호가 일치하지 않을 경우 예외 발생.
+     */
+    @Transactional
+    public void modifyPassword(Long userId, UserPasswordModifyRequestDTO passwordModifyRequest) {
+        // 사용자 ID로 사용자 검색
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        // 기존 비밀번호 일치 여부 확인
+        isPasswordMatch(passwordModifyRequest.getExistingPassword(), user.getPassword());
+
+        // 새로운 비밀번호 유효성 검사
+        validatePassword(passwordModifyRequest.getNewPassword());
+
+        // 비밀번호 수정
+        user.setPassword(passwordEncoder.encode(passwordModifyRequest.getNewPassword()));
+    }
 }

@@ -32,17 +32,17 @@ public class PostingController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("")
-    @ApiOperation(value="조건 검색", notes="태그 기반 조건 검색해서 Posting 목록을 가져옵니다.")
+    @ApiOperation(value="조건 검색", notes="요청 조건 기반 검색해서 Posting 목록을 가져옵니다.")
     public ResponseEntity<PostingSearchResponseDTO>  getPostingListSearchByCondition(
             @RequestHeader(AUTHORIZATION) String token,
             @RequestParam(value="hashtagname") String hashtagname
-            , @Valid @RequestParam("type")PostingType type
-            , @Valid @RequestParam("searchtype")SearchType searchType, @RequestParam("keyword") String searchKeyword
+            , @RequestParam("type")PostingType type
+            , @RequestParam("searchtype")SearchType searchType
+            , @RequestParam("keyword") String searchKeyword
             , @PageableDefault(page=0, size = 10, sort = "createdAt", direction = Sort.Direction.ASC)Pageable pageable
     ) {
         if(hashtagname==null){
-            //!!warn!! getAccountFromToken 구현 필요
-//            hashtagname = jwtTokenProvider.getAccountFromToken(token);
+            hashtagname = jwtTokenProvider.getAccountFromToken(token);
         }
 
         return new ResponseEntity<>(postingService.getPostingList(PostingSearchRequestDTO.builder()

@@ -27,14 +27,6 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, Object> sortedSetTemplate(RedisConnectionFactory redisConnectionFactory) {
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(redisConnectionFactory);
-        template.setDefaultSerializer(new StringRedisSerializer()); // StringRedisSerializer 사용
-        return template;
-    }
-
-    @Bean
     public RedisTemplate<String, Long> listTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Long> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
@@ -43,6 +35,19 @@ public class RedisConfig {
 
         // Value 직렬화 설정
         RedisSerializer<Long> valueSerializer = new GenericToStringSerializer<>(Long.class);
+        template.setValueSerializer(valueSerializer);
+        return template;
+    }
+
+    @Bean
+    public RedisTemplate<String, String> listStringTemplate(RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<String, String> template = new RedisTemplate<>();
+        template.setConnectionFactory(redisConnectionFactory);
+        // Key 직렬화 설정
+        template.setKeySerializer(new StringRedisSerializer());
+
+        // Value 직렬화 설정
+        RedisSerializer<String> valueSerializer = new GenericToStringSerializer<>(String.class);
         template.setValueSerializer(valueSerializer);
         return template;
     }
