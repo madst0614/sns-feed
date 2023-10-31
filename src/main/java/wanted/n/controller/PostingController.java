@@ -19,8 +19,6 @@ import wanted.n.enums.PostingType;
 import wanted.n.enums.SearchType;
 import wanted.n.service.PostingService;
 
-import javax.validation.Valid;
-
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor

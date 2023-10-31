@@ -21,7 +21,6 @@ import wanted.n.enums.PostingType;
 import wanted.n.enums.SearchType;
 import wanted.n.repository.HashTagRepository;
 import wanted.n.repository.PostingRepository;
-import wanted.n.service.impl.PostingServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,18 +32,18 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("PostingService 테스트")
-public class PostingServiceImplTest {
+public class PostingServiceTest {
 
     @Mock
     private PostingRepository postingRepository;
     @Mock
     private HashTagRepository hashTagRepository;
 
-    private PostingServiceImpl postingServiceImpl;
+    private PostingService postingService;
     @BeforeEach
     public void setup(){
         MockitoAnnotations.openMocks(this);
-        postingServiceImpl = new PostingServiceImpl(postingRepository, hashTagRepository);
+        postingService = new PostingService(postingRepository, hashTagRepository);
     }
     @Test
     @DisplayName("GetPostingList 테스트")
@@ -66,7 +65,7 @@ public class PostingServiceImplTest {
          when(postingRepository.findPostingPageByCondition(any(), any())).thenReturn(new PageImpl<>(expect));
 
          //When
-        List<Posting> result = postingServiceImpl.getPostingList(postingSearchRequestDto, pageable).getPostingList();
+        List<Posting> result = postingService.getPostingList(postingSearchRequestDto, pageable).getPostingList();
 
         //Then
         assertThat(result).isEqualTo(expect);
@@ -87,7 +86,7 @@ public class PostingServiceImplTest {
 
 
         //When
-        Posting result = postingServiceImpl.upPostingViewCount(postingDetailRequestDTO).getPosting();
+        Posting result = postingService.upPostingViewCount(postingDetailRequestDTO).getPosting();
 
         //Then
         assertThat(result.getId()).isEqualTo(expect.getId());
@@ -110,7 +109,7 @@ public class PostingServiceImplTest {
         when(postingRepository.findById(1L)).thenReturn( Optional.of(Posting.builder().id(1L).title("테스트").type(PostingType.INSTAGRAM).likeCount(1L).build()));
 
         //When
-        postingServiceImpl.likePosting(postingExternalFeaturesRequestDTO);
+        postingService.likePosting(postingExternalFeaturesRequestDTO);
 
         //Then
         verify(postingRepository, times(1))
@@ -130,7 +129,7 @@ public class PostingServiceImplTest {
         when(postingRepository.findById(1L)).thenReturn( Optional.of(Posting.builder().id(1L).title("테스트").type(PostingType.INSTAGRAM).shareCount(1L).build()));
 
         //When
-        postingServiceImpl.sharePosting(postingExternalFeaturesRequestDTO);
+        postingService.sharePosting(postingExternalFeaturesRequestDTO);
 
         //Then
         verify(postingRepository, times(1))

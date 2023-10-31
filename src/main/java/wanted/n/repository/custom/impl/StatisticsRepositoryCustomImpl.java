@@ -32,7 +32,7 @@ public class StatisticsRepositoryCustomImpl implements StatisticsRepositoryCusto
                 group by posting_hashtag.hashtag_id ;
      */
     @Override
-    public Optional<List<StatisticsHashTagCountSum>> findAllCountSumByAllHashTags() {
+    public List<StatisticsHashTagCountSum> findAllCountSumByAllHashTags() {
 
         JPQLQuery<StatisticsHashTagCountSum> query = queryFactory
                 .select(Projections.constructor(
@@ -48,7 +48,7 @@ public class StatisticsRepositoryCustomImpl implements StatisticsRepositoryCusto
                 .distinct()
                 .fetchAll();
 
-        return Optional.ofNullable(query.fetch());
+        return query.fetch();
     }
 
     /*
@@ -58,7 +58,7 @@ public class StatisticsRepositoryCustomImpl implements StatisticsRepositoryCusto
         WHERE statistics_hashtag.hashtag_id = {hashTagId};
      */
     @Override
-    public Optional<List<StatisticsHashtagSearchResult>> findStatisticsHashTagAndCalcByCondition(StatisticsSearchConditionDTO dto) {
+    public List<StatisticsHashtagSearchResult> findStatisticsHashTagAndCalcByCondition(StatisticsSearchConditionDTO dto) {
         JPQLQuery<StatisticsHashtagSearchResult> query = queryFactory
                 .select(getCntTypeQBean(dto.getCountType())
                 )
@@ -69,7 +69,7 @@ public class StatisticsRepositoryCustomImpl implements StatisticsRepositoryCusto
                         ,statisticsHashTag.createdAt.loe(dto.getEnd())
                 );
 
-        return Optional.ofNullable(query.fetch());
+        return query.fetch();
     }
 
     public static ConstructorExpression<StatisticsHashtagSearchResult> getCntTypeQBean(CountType countType){

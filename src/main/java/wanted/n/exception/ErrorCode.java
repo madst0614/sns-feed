@@ -20,8 +20,8 @@ public enum ErrorCode {
 
     //DateException
     INVALID_PERIOD(HttpStatus.BAD_REQUEST, "유효하지 않은 기간입니다."),
-    INVALID_DURATIONWITHDAY(HttpStatus.BAD_GATEWAY, "최대 한달(30일) 조회 가능합니다."),
-    INVALID_DURATIONWITHHOUR(HttpStatus.BAD_GATEWAY, "최대 일주일(7일) 조회 가능합니다."),
+    INVALID_DURATIONWITHDAY(HttpStatus.BAD_REQUEST, "최대 한달(30일) 조회 가능합니다."),
+    INVALID_DURATIONWITHHOUR(HttpStatus.BAD_REQUEST, "최대 일주일(7일) 조회 가능합니다."),
 
     //EmailException
     EMAIL_SENDING_FAILED(HttpStatus.BAD_REQUEST, "이메일 전송에 실패했습니다."),

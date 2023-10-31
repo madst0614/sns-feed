@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class StatisticsSearchRequestDTO {
     private String hashTagName;
     private DateType dateType;
-    private LocalDateTime start;
-    private LocalDateTime end;
+    private String start;
+    private String end;
     private CountType countType;
 }

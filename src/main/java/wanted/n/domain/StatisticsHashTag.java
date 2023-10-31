@@ -44,7 +44,7 @@ public class StatisticsHashTag extends BaseEntity {
     @ColumnDefault("0")
     private Long shareCountSum;
 
-    public static StatisticsHashTag of(StatisticsHashTagCountSum statisticsHashTagCountSum, DateType dateType){
+    public static StatisticsHashTag from(StatisticsHashTagCountSum statisticsHashTagCountSum, DateType dateType){
         return StatisticsHashTag.builder()
                 .hashTag(HashTag.builder().id(statisticsHashTagCountSum.getHashTagId()).build())
                 .dateType(dateType)
