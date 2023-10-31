@@ -31,19 +31,13 @@ public class PostingServiceImpl implements PostingService {
     @Transactional(readOnly = true)
     public PostingSearchResponseDTO getPostingList(PostingSearchRequestDTO postingSearchRequestDTO, Pageable pageable) {
         // !WARN! hashTagId look-up 작업 필요 !WARN!
-        Optional<HashTag> hashTag = hashTagRepository.findByName(postingSearchRequestDTO.getHashTagName());
-
-        if(hashTag.isEmpty()){
-            hashTag = Optional.of(
-                    hashTagRepository.save(
-                    HashTag.builder()
-                    .name(postingSearchRequestDTO.getHashTagName())
-                    .build()));
-        }
+        HashTag hashTag = hashTagRepository.findByName
+                (postingSearchRequestDTO.getHashTagName())
+                .orElseThrow(()->new CustomException(ErrorCode.HASHTAG_NOT_FOUND));
 
         PostingSearchConditionDTO postingSearchConditionDto
                 = PostingSearchConditionDTO.builder()
-                .hashTagId(hashTag.get().getId())
+                .hashTagId(hashTag.getId())
                 .type(postingSearchRequestDTO.getType())
                 .searchType(postingSearchRequestDTO.getSearchType())
                 .searchKeyword(postingSearchRequestDTO.getSearchKeyword())
