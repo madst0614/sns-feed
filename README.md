@@ -13,12 +13,12 @@
 ## 목차
 - [개요](#개요)
 - [사용기술](#사용기술)
+- [느낀 점](#느낀-점)
 - [API 문서](#API-문서)
 - [구현 기능](#구현기능)
 - [시스템 구성도](#시스템-구성도)
 - [ERD](#ERD)
-- [TIL 및 회고](#프로젝트-관리-및-회고
-  )
+
 
 
 ## 개요
@@ -54,25 +54,33 @@
 <img src="https://img.shields.io/badge/discord-4A154B?&logo=discord&logoColor=white"> <img src="https://img.shields.io/badge/notion-000000?&logo=notion&logoColor=white">
 <br/>
 
+## 느낀 점
+이번 프로젝트는 게시글 기능과 통계 기능을 맡아 구현했다.첫 팀 프로젝트 였기에 배울 것이 너무 많았다.우선 기존에 쓰던 이클립스 IDE에서 IntelliJ IDEA를 쓰기 시작했고, main 브랜치만 쓰던 Github 방식을 바꿔야 했다.  
+또한 처음 JPA를 써봐야 했고 두 개 이상의 테이블을 조인해서 쿼리를 짜야기 했기에 QueryDSL까지 학습 해야 했다. 우선 하루는 IntelliJ와 깃헙을 사용하기 위해 관련 정보를 찾아 봤고 개발 환경을 세팅했다. 그리고 다음 날부터 JPA 기초를 찾아 봤고 개념이 좀 와닿을때쯤
+QueryDSL에 대해서 찾아봤고 학습했다. 충분히 관련 정보를 찾아본 후에 JPA와 QueryDSL를 이용해서 게시글 기능과 통계 기능을 아슬아슬하게 기한 내에 제출 했다.  
+N+1 문제 등 JPA와 QueryDSL를 사용했을 때 조심해야할 사항에 대해 충분히 숙지하고 구현하고 싶었지만, 5일 내에 JPA와 QueryDSL을 배우고 관련 기능을 구현하는 것은 너무 어려웠다. 통계 기능 또한 성능을 고려하여 구현하지 못하고 아쉬움이 많은 프로젝트 였다.  
+처음 팀 프로젝트를 진행하는 팀원을 배려해주고 기다려준 팀원들이 고마웠다.
+
 ## API 문서
 [![Swagger](https://img.shields.io/badge/swagger_문서로_확인하기_(클릭!)-85EA2D?&logo=swagger&logoColor=white)](http://54.225.40.161:8090/swagger-ui/index.html#/)
 
 
-| API Type | Http Method| URL                         | Description    |
-|----------|-------------|-----------------------------|----------------|
-| **Auth API** | POST | `/api/v1/auth/refresh`                   | 엑세스토큰 재발급      | 
-| **User API**| POST | `/api/v1/users/sign-up`                  | 회원가입           |
-| **User API**| PATCH | `/api/v1/users/verification`             | 회원가입 인증        |
-| **User API**| POST | `/api/v1/users/verification/otp-reissue` | OTP 재발급        |
-| **User API**| POST | `/api/v1/users/sign-in`                  | 로그인            |
-| **User API**| PATCH | `/api/v1/users/password/modify`          | 비밀번호 변경        |
-| **User API**| PATCH | `/api/v1/users/password/reset`           | 비밀번호 재설정       |
-| **User API**| POST | `/api/v1/users/sign-out`                 | 로그아웃           |
-| **Posting API**| GET | `/api/v1/postings`                       | 조건 검색          |
-| **Posting API**| GET | `/api/v1/postings/{id}`                  | 포스팅 상세 가져오기    |
-| **Posting API**| PATCH | `/api/v1/postings/like/{id}`             | 포스팅 좋아요        |
-| **Posting API**| PATCH | `/api/v1/postings/share/{id}`            | 포스팅 공유         |
-| **Log API**| GET | `/api/v1/logs/hashtags`                  | hot hashtag 조회 |
+| API Type        | Http Method| URL                                      | Description    |
+|-----------------|-------------|------------------------------------------|----------------|
+| **Auth API**    | POST | `/api/v1/auth/refresh`                   | 엑세스토큰 재발급      | 
+| **User API**    | POST | `/api/v1/users/sign-up`                  | 회원가입           |
+| **User API**    | PATCH | `/api/v1/users/verification`             | 회원가입 인증        |
+| **User API**    | POST | `/api/v1/users/verification/otp-reissue` | OTP 재발급        |
+| **User API**    | POST | `/api/v1/users/sign-in`                  | 로그인            |
+| **User API**    | PATCH | `/api/v1/users/password/modify`          | 비밀번호 변경        |
+| **User API**    | PATCH | `/api/v1/users/password/reset`           | 비밀번호 재설정       |
+| **User API**    | POST | `/api/v1/users/sign-out`                 | 로그아웃           |
+| **Posting API** | GET | `/api/v1/postings`                       | 조건 검색          |
+| **Posting API** | GET | `/api/v1/postings/{id}`                  | 포스팅 상세 가져오기    |
+| **Posting API** | PATCH | `/api/v1/postings/like/{id}`             | 포스팅 좋아요        |
+| **Posting API** | PATCH | `/api/v1/postings/share/{id}`            | 포스팅 공유         |
+| **Stats API**   | PATCH | `/api/v1/statistics/hashtags`            | 해시태그 통계        |
+| **Log API**     | GET | `/api/v1/logs/hashtags`                  | hot hashtag 조회 |
 
 
 ## 구현기능
@@ -228,6 +236,4 @@
 
 ## ERD
 ![ERD](https://drive.google.com/uc?export=view&id=1aYq6CCC___1LNizJXIKTGTxxJM5qBSEI)
-
-
 
